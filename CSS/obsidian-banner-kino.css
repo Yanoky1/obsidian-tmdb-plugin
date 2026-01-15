@@ -1,0 +1,188 @@
+/* ===== Obsidian Movie Layout - Kinopoisk Style ===== */
+/* Based on Bluemoondragon07's banner snippet */
+
+body {
+    --banner-height: 350px;
+    --poster-width: 380px;
+    --logo-size: 25%;
+}
+
+/* ===== RESPONSIVE SIZES ===== */
+/* Large screens */
+@media (min-width: 1600px) {
+    body {
+        --banner-height: 200px;
+        --poster-width: 250px;
+        --logo-size: 220px;
+    }
+}
+
+/* Medium-large screens */
+@media (min-width: 1200px) and (max-width: 1599px) {
+    body {
+        --banner-height: 200px;
+        --poster-width: 250px;
+        --logo-size: 220px;
+    }
+}
+
+/* Medium screens */
+@media (min-width: 900px) and (max-width: 1199px) {
+    body {
+        --banner-height: 200px;
+        --poster-width: 200px;
+        --logo-size: 220px;
+    }
+}
+
+/* Small screens */
+@media (min-width: 768px) and (max-width: 899px) {
+    body {
+        --banner-height: 150px;
+        --poster-width: 160px;
+        --logo-size: 150px;
+    }
+}
+
+/* Mobile screens */
+@media (max-width: 767px) {
+    body {
+        --banner-height: 130px;
+        --poster-width: 130px;
+        --logo-size: 120px;
+    }
+}
+
+/* ===== HIDE TITLE ===== */
+/* Hide the default Obsidian title since we'll use the banner */
+.obsidian-poster .inline-title {
+    display: none;
+}
+
+/* ===== BANNER/COVER ===== */
+.internal-embed.image-embed[alt="cover"] {
+    display: contents;
+}
+
+.obsidian-poster img[alt="cover"] {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: var(--banner-height);
+    width: 100%;
+    object-fit: cover;
+    object-position: 50% 0%;
+    user-select: none;
+    z-index: 0;
+    border-radius: 0;
+    /* Dark overlay for better readability */
+    filter: brightness(0.2);
+}
+
+/* Adjust content padding for banner */
+.obsidian-poster.markdown-preview-view:has(img[alt="cover"]) .mod-header {
+    position: relative;
+    padding-top: calc(var(--banner-height) - 40px);
+    z-index: 1;
+}
+
+
+.obsidian-poster:has(img[alt="cover"]) .cm-sizer {
+    position: static;
+    padding-top: calc(var(--banner-height) - 40px);
+    z-index: 1;
+}
+
+/* ===== LOGO ===== */
+.internal-embed.image-embed[alt="logo"] {
+    display: contents;
+}
+
+.obsidian-poster img[alt="logo"] {
+    position: absolute;
+    width: var(--logo-size) !important;
+    height: auto !important;
+    max-height: var(--logo-size);
+    object-fit: contain;
+    z-index: 5;
+    top: calc(var(--banner-height) / 2);
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+/* ===== POSTER ===== */
+.internal-embed.image-embed[alt="poster"] {
+    display: contents;
+}
+
+.obsidian-poster img[alt="poster"] {
+    width: var(--poster-width);
+    max-width: var(--poster-width);
+    height: auto;
+    object-fit: cover;
+    border-radius: 10px;
+
+    margin: 20px 20px 0px 0;
+    float: left;
+    position: relative;
+    z-index: 10;
+}
+
+/* Position poster to overlap banner slightly */
+.obsidian-poster.obsidian-poster img[alt="poster"] {
+    margin-top: -80px;
+    margin-left: 0px;
+}
+
+
+/* First heading after images (usually "Описание") */
+.obsidian-poster.obsidian-poster h1:first-of-type {
+    margin-top: 0px;
+    margin-bottom: 0px;
+    font-size: var(--inline-title-size);
+ 
+}
+
+/* First heading after images (usually "Описание") */
+.obsidian-poster.obsidian-poster h1 {
+    margin-top: 0px;
+ 
+}
+
+
+/* ===== HIDE EMPTY LINES ===== */
+.obsidian-poster.markdown-preview-view span[alt="cover"]+br,
+.obsidian-poster.markdown-preview-view span[alt="logo"]+br,
+.obsidian-poster.markdown-preview-view span[alt="poster"]+br {
+    display: none;
+}
+
+
+/* ===== MOBILE ===== */
+.is-mobile .obsidian-poster.markdown-preview-view:has(img[alt="cover"]) .mod-header {
+    padding-top: calc(var(--banner-height) - 10px);
+}
+
+
+.is-mobile .obsidian-poster img[alt="logo"] {
+    width: var(--logo-size) !important;
+    top: calc(var(--banner-height) / 2);
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+/* Mobile poster adjustments */
+@media (max-width: 0px) {
+    .obsidian-poster img[alt="poster"] {
+        float: none;
+        margin: 20px auto;
+        display: block;
+    }
+
+    .obsidian-poster.obsidian-poster img[alt="poster"] {
+        margin-top: 20px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+}
