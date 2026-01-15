@@ -19,7 +19,7 @@ Key differences between the [original plugin](https://github.com/Alintor/obsidia
 5. **Better Obsidian compatibility** - Improved integration with Obsidian features
 6. **Bug fixes** - Minor issues from the original version have been resolved
 
-# Obsidian Kinopoisk Search Plus Plugin
+# Obsidian TMDB search Plugin
 
 Easily search movies and TV shows info via Kinopoisk and create notes.
 
@@ -36,7 +36,7 @@ Uses the Kinopoisk.dev API to retrieve comprehensive film and series data.
 
 # How to use
 
-### 1. Click the ribbon icon, or execute the command "Kinopoisk search Plus"
+### 1. Click the ribbon icon, or execute the command "TMDB search"
 
 <img src="assets/Command.png" alt="Command" width="500">
 
@@ -48,19 +48,27 @@ Uses the Kinopoisk.dev API to retrieve comprehensive film and series data.
 
 <img src="assets/Result.png" alt="Result" width="500">
 
-### 4. Voila! A note has been created
+### 4. Select poster
+
+<img src="assets/selPoster.png" alt="Created" width="300">
+
+### 5. Select status
+
+<img src="assets/selStatus.png" alt="Created" width="500">
+
+### 6. Voila! A note has been created
 
 <img src="assets/Created.png" alt="Created" width="500">
 
 # Configure plugin in settings
 
-<img src="assets/Settings.png" alt="Settings" width="500">
+<img src="assets/Settings.png" alt="Settings" width="300">
 
 # Get API Token
 
 You need an API token to use this plugin.
 
-1. Visit [kinopoisk.dev](https://kinopoisk.dev/)
+1. Visit [developer.themoviedb.org](https://developer.themoviedb.org/docs/getting-started)
 2. Choose the free plan
 3. Follow the registration steps
 4. Copy your API token to the plugin settings
@@ -71,9 +79,9 @@ You can customize the file name format for generated notes.
 
 > **Example:** Using the default format, "The Matrix" (1999) would create a file named `The Matrix (1999).md`
 
-**Default format:** `{{nameForFile}} ({{year}})`
+**Default format:** `{{nameForFile}}`
 
-This creates files like "The Matrix (1999).md"
+This creates files like "Arcane.md"
 
 **Learn more about naming options:** [File Naming Options](#file-naming-options)
 
@@ -87,7 +95,7 @@ If no location is specified, new files are created in the Obsidian root folder.
 
 Enable image saving in the plugin settings and specify the path to the folder where selected images will be saved.
 
-**Default folder:** `attachments/kinopoisk`
+**Default folder:** `attachments/TMDB`
 
 **Available download options:**
 
