@@ -1,0 +1,21 @@
+{
+  "language": "ru",
+  "apiToken": "eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJiYjgzNjhjMjQyZDg3OTcwNzFmYjgwYjM3MDE0MWRlZCIsIm5iZiI6MTc2NTc4MDExNS40MTkwMDAxLCJzdWIiOiI2OTNmYWE5MzEzZmFmMzJhMmYyMjZmYjEiLCJzY29wZXMiOlsiYXBpX3JlYWQiXSwidmVyc2lvbiI6MX0.5xchVKxEupmaaSrKsN45cIzaDyHfpgYfpHdnYBpZd8A",
+  "apiTokenValid": true,
+  "movieFileNameFormat": "{{nameForFile}}",
+  "movieFolder": "Dataview/Кино",
+  "movieTemplateFile": "Templates/Links/Link Кино.md",
+  "seriesFileNameFormat": "{{nameForFile}}",
+  "seriesFolder": "Dataview/Кино",
+  "seriesTemplateFile": "Templates/Links/Link Сериал.md",
+  "actorsPath": "Dataview/Актеры_Режиссеры",
+  "directorsPath": "Dataview/Актеры_Режиссеры",
+  "writersPath": "Dataview/Актеры_Режиссеры",
+  "producersPath": "Dataview/Актеры_Режиссеры",
+  "imagesFolder": "Dataview/Кино/attachments",
+  "saveImagesLocally": true,
+  "savePosterImage": true,
+  "saveCoverImage": true,
+  "saveLogoImage": true,
+  "mobileCoverHeightMultiplier": 1.4
+}
