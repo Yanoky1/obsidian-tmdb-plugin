@@ -33,6 +33,7 @@ Uses the Kinopoisk.dev API to retrieve comprehensive film and series data.
 
 **Option 1:** Manual installation - download the latest release files (`main.js`, `manifest.json`, `styles.css`) from [Releases](https://github.com/Yanoky1/obsidian-tmdb-plugin/releases) and place them in your vault's `.obsidian/plugins/tmdb-search/` folder.
 
+
 # How to use
 
 ### 1. Click the ribbon icon, or execute the command "Kinopoisk search Plus"
