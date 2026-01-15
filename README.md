@@ -6,7 +6,7 @@
 
 # Credits
 
-Based on the original work by [Alintor](https://github.com/Alintor)
+Based on the original work by [Alintor](https://github.com/Alintor) and [2PleXXX](https://github.com/2PleXXX)
 
 # Plugin Differences
 
@@ -31,9 +31,7 @@ Uses the Kinopoisk.dev API to retrieve comprehensive film and series data.
 
 # How to install
 
-**Option 1:** Search for "Kinopoisk Search Plus" in the Obsidian Community plugins _(coming soon to Community Plugins)_
-
-**Option 2:** Manual installation - download the latest release files (`main.js`, `manifest.json`, `styles.css`) from [Releases](https://github.com/2PleXXX/obsidian-kinopoisk-search-plus-plugin/releases) and place them in your vault's `.obsidian/plugins/kinopoisk-search-plus/` folder.
+**Option 1:** Manual installation - download the latest release files (`main.js`, `manifest.json`, `styles.css`) from [Releases](https://github.com/Yanoky1/obsidian-tmdb-plugin/releases) and place them in your vault's `.obsidian/plugins/tmdb-search/` folder.
 
 # How to use
 
