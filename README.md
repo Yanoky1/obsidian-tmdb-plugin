@@ -597,96 +597,29 @@ Contain clean file paths or URLs for use in custom markdown constructions, espec
 
 | Variable                       | Description                          | Type   | List | Example   |
 | ------------------------------ | ------------------------------------ | ------ | ---- | --------- |
-| `{{ratingKp}}`                 | Kinopoisk rating (0-10)              | Number | ❌   | `8.5`     |
-| `{{ratingImdb}}`               | IMDb rating (0-10)                   | Number | ❌   | `8.7`     |
-| `{{ratingFilmCritics}}`        | Film critics rating (0-10)           | Number | ❌   | `7.8`     |
-| `{{ratingRussianFilmCritics}}` | Russian film critics rating (0-10)   | Number | ❌   | `8.1`     |
-| `{{votesKp}}`                  | Number of votes on Kinopoisk         | Number | ❌   | `524891`  |
-| `{{votesImdb}}`                | Number of votes on IMDb              | Number | ❌   | `1789321` |
-| `{{votesFilmCritics}}`         | Number of film critics votes         | Number | ❌   | `143`     |
-| `{{votesRussianFilmCritics}}`  | Number of Russian film critics votes | Number | ❌   | `25`      |
+| `{{ratingImdb}}`               | TMDB rating (0-10)                   | Number | ❌   | `7.5`     |
 
 ## 🔗 External Links and Identifiers
 
 | Variable           | Description                           | Type   | List | Example                              |
 | ------------------ | ------------------------------------- | ------ | ---- | ------------------------------------ |
-| `{{kinopoiskUrl}}` | Direct link to film page on Kinopoisk | URL    | ✅   | `https://www.kinopoisk.ru/film/301/` |
-| `{{imdbId}}`       | Film identifier in IMDb database      | String | ✅   | `tt0133093`                          |
-| `{{tmdbId}}`       | Film identifier in TMDb database      | Number | ❌   | `603`                                |
-| `{{kpHDId}}`       | Identifier in Kinopoisk HD system     | String | ✅   | `4e8f2f8e4b8b4c8d`                   |
+| `{{TMDBLink}}` | Direct link to film page on TMDB | URL    | ✅   | `https://www.themoviedb.org/movie/245891` |
+| `{{imdbId}}`       | Film identifier in IMDb database      | String | ✅   | `tt2911666`                          |
+| `{{tmdbId}}`       | Film identifier in TMDb database      | Number | ❌   | `245891`                                |
 
 ## 📝 Additional Information
 
 | Variable         | Description                          | Type   | List | Example                           |
 | ---------------- | ------------------------------------ | ------ | ---- | --------------------------------- |
-| `{{slogan}}`     | Film promotional slogan              | String | ✅   | `Добро пожаловать в реальный мир` |
 | `{{ageRating}}`  | Age restriction (years)              | Number | ❌   | `16`                              |
-| `{{ratingMpaa}}` | MPAA rating (G, PG, PG-13, R, NC-17) | String | ✅   | `R`                               |
 
-## 💰 Financial Information
-
-| Variable                 | Description                   | Type   | List | Example     |
-| ------------------------ | ----------------------------- | ------ | ---- | ----------- |
-| `{{budgetValue}}`        | Film budget amount            | Number | ❌   | `63000000`  |
-| `{{budgetCurrency}}`     | Budget currency               | String | ✅   | `$`         |
-| `{{feesWorldValue}}`     | Worldwide box office          | Number | ❌   | `467222824` |
-| `{{feesWorldCurrency}}`  | Worldwide box office currency | String | ✅   | `$`         |
-| `{{feesRussiaValue}}`    | Russia box office             | Number | ❌   | `1200000`   |
-| `{{feesRussiaCurrency}}` | Russia box office currency    | String | ✅   | `$`         |
-| `{{feesUsaValue}}`       | USA box office                | Number | ❌   | `171479930` |
-| `{{feesUsaCurrency}}`    | USA box office currency       | String | ✅   | `$`         |
-
-## 📅 Premiere Dates
-
-| Variable              | Description                        | Type | List | Example      |
-| --------------------- | ---------------------------------- | ---- | ---- | ------------ |
-| `{{premiereWorld}}`   | World premiere date (YYYY-MM-DD)   | Date | ❌   | `1999-03-24` |
-| `{{premiereRussia}}`  | Russia premiere date (YYYY-MM-DD)  | Date | ❌   | `1999-06-10` |
-| `{{premiereDigital}}` | Digital premiere date (YYYY-MM-DD) | Date | ❌   | `1999-12-15` |
-| `{{premiereCinema}}`  | Cinema premiere date (YYYY-MM-DD)  | Date | ❌   | `1999-03-31` |
-
-## 📊 Release Periods and Rankings
-
-| Variable                | Description                             | Type   | List | Example |
-| ----------------------- | --------------------------------------- | ------ | ---- | ------- |
-| `{{releaseYearsStart}}` | Release start year (for series)         | Number | ❌   | `2011`  |
-| `{{releaseYearsEnd}}`   | Release end year (for series)           | Number | ❌   | `2019`  |
-| `{{top10}}`             | Position in top 10 (0 if not included)  | Number | ❌   | `5`     |
-| `{{top250}}`            | Position in top 250 (0 if not included) | Number | ❌   | `74`    |
-
-## 💡 Additional Content
-
-| Variable             | Description                                  | Type   | List | Example                                        |
-| -------------------- | -------------------------------------------- | ------ | ---- | ---------------------------------------------- |
-| `{{facts}}`          | Interesting facts about the film (maximum 5) | String | ✅   | `Сцены в Матрице снимались с зелёным фильтром` |
-| `{{allNamesString}}` | All known film titles                        | String | ✅   | `Matrix, Матрица, マトリックス`                |
-| `{{enName}}`         | Official English title                       | String | ✅   | `The Matrix`                                   |
-
-## 🎬 Production and Distribution
-
-| Variable                       | Description                       | Type   | List | Example                          |
-| ------------------------------ | --------------------------------- | ------ | ---- | -------------------------------- |
-| `{{networks}}`                 | TV networks/channels (for series) | String | ✅   | `HBO, Netflix`                   |
-| `{{networksLinks}}`            | Networks as Obsidian links        | Link   | ✅   | `[[HBO]], [[Netflix]]`           |
-| `{{productionCompanies}}`      | Production companies              | String | ✅   | `Warner Bros., Village Roadshow` |
-| `{{productionCompaniesLinks}}` | Companies as Obsidian links       | Link   | ✅   | `[[Warner Bros.]]`               |
-| `{{distributor}}`              | Film distributor                  | String | ✅   | `Warner Bros.`                   |
-| `{{distributorRelease}}`       | Distributor release date          | Date   | ❌   | `1999-03-31`                     |
-
-## 🔄 Related Films
-
-| Variable                      | Description                     | Type   | List | Example                                     |
-| ----------------------------- | ------------------------------- | ------ | ---- | ------------------------------------------- |
-| `{{sequelsAndPrequels}}`      | Sequel and prequel titles       | String | ✅   | `Матрица: Перезагрузка, Матрица: Революция` |
-| `{{sequelsAndPrequelsLinks}}` | Related films as Obsidian links | Link   | ✅   | `[[Матрица: Перезагрузка]]`                 |
 
 ## 🛠️ Service Variables for File Names
 
 | Variable                     | Description                             | Type   | List | Example      |
 | ---------------------------- | --------------------------------------- | ------ | ---- | ------------ |
 | `{{nameForFile}}`            | Film title cleaned for use in file name | String | ❌   | `Матрица`    |
-| `{{alternativeNameForFile}}` | Alternative title for file name         | String | ❌   | `The Matrix` |
-| `{{enNameForFile}}`          | English title for file name             | String | ❌   | `The Matrix` |
+
 
 > 💡 **Tip:** Variables marked with "List ✅" can contain multiple values separated by commas. To specify that a variable is a list, you need to enclose the variable in square brackets "[{{name}}]".
 
@@ -699,75 +632,10 @@ Contain clean file paths or URLs for use in custom markdown constructions, espec
 **Available variables for file names:**
 
 -   `{{nameForFile}}` - main title
--   `{{alternativeNameForFile}}` - alternative title
--   `{{enNameForFile}}` - English title
 -   `{{year}}` - release year
--   `{{id}}` - Kinopoisk ID
+-   `{{id}}` - TMDB ID
 
-## File Name Format Examples
-
-### Basic Formats
-
--   `{{nameForFile}}`
--   `{{nameForFile}} ({{year}})`
--   `{{year}} - {{nameForFile}}`
--   `{{nameForFile}} [{{year}}]`
--   `[{{year}}] {{nameForFile}}`
-
-### With Alternative Titles
-
--   `{{nameForFile}} / {{alternativeNameForFile}}`
--   `{{nameForFile}} ({{alternativeNameForFile}})`
--   `{{nameForFile}} - {{alternativeNameForFile}} ({{year}})`
--   `{{alternativeNameForFile}} ({{year}})`
-
-### With English Titles
-
--   `{{nameForFile}} / {{enNameForFile}}`
--   `{{enNameForFile}} ({{year}})`
--   `{{nameForFile}} ({{enNameForFile}}) [{{year}}]`
--   `{{enNameForFile}} - {{nameForFile}} ({{year}})`
-
-### With Content Type
-
--   `[{{type}}] {{nameForFile}} ({{year}})`
--   `{{nameForFile}} ({{year}}) [{{type}}]`
--   `{{type}} - {{nameForFile}} ({{year}})`
-
-### With Kinopoisk ID
-
--   `{{nameForFile}} ({{year}}) [{{id}}]`
--   `[{{id}}] {{nameForFile}} ({{year}})`
--   `{{nameForFile}} - {{id}}`
-
-### Complex Combinations
-
--   `{{year}} - {{nameForFile}} / {{enNameForFile}} [{{type}}]`
--   `{{nameForFile}} ({{year}}) - {{enNameForFile}} [ID-{{id}}]`
-
-## Example Results
-
--   `Титаник (1997)`
--   `1997 - Титаник`
--   `Титаник / Titanic (1997)`
--   `[326] Титаник (1997)`
-
-> **Note:** You can experiment with different variable combinations, including variables not mentioned here. However, I cannot guarantee proper functionality in such cases. 😊
-
-# Learn More About the Plugin
-
-You can download the example vault from the repository and open it locally. The vault contains everything you need to understand how the plugin works.
-
-**Option 1:** Clone the repository and open the `Example Vault` folder as an Obsidian vault  
-**Option 2:** Download the vault archive directly
-
--   [Clone Repository](https://github.com/2PleXXX/obsidian-kinopoisk-search-plus-plugin)
--   [Download Example Vault Archive](https://github.com/2PleXXX/obsidian-kinopoisk-search-plus-plugin/releases/download/2.0.0/Example.Vault.rar)
 
 # License
 
-[Obsidian Kinopoisk Plus Plugin](https://github.com/2PleXXX/obsidian-kinopoisk-search-plus-plugin) is licensed under the GNU AGPLv3 license. Refer to [LICENSE](https://github.com/2PleXXX/obsidian-kinopoisk-search-plus-plugin/blob/main/LICENSE) for more information.
-
-# Related Tools
-
--   **[Obsidian Dataview Cards](https://github.com/2PleXXX/obsidian-dataview-cards)** - A companion script (not a plugin) that displays movie metadata as beautiful cards, perfectly complementing this plugin. View the repository for detailed information and setup instructions.
+[TMDB-search](https://github.com/Yanoky1/obsidian-tmdb-plugin) is licensed under the GNU AGPLv3 license. Refer to [LICENSE](https://github.com/Yanoky1/obsidian-tmdb-plugin/blob/main/LICENSE.md) for more information.
