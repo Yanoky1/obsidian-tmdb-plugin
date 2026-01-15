@@ -77,7 +77,7 @@ You need an API token to use this plugin.
 
 You can customize the file name format for generated notes.
 
-> **Example:** Using the default format, "The Matrix" (1999) would create a file named `The Matrix (1999).md`
+> **Example:** Using the default format, "Arcane" would create a file named `Arcane.md`
 
 **Default format:** `{{nameForFile}}`
 
