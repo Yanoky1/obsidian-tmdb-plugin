@@ -221,6 +221,9 @@ var init_i18n = __esm({
         saveCoverImageDesc: "\u0421\u043A\u0430\u0447\u0438\u0432\u0430\u0442\u044C \u0438 \u0441\u043E\u0445\u0440\u0430\u043D\u044F\u0442\u044C \u043E\u0431\u043B\u043E\u0436\u043A\u0438/\u0431\u044D\u043A\u0434\u0440\u043E\u043F\u044B \u0444\u0438\u043B\u044C\u043C\u043E\u0432/\u0441\u0435\u0440\u0438\u0430\u043B\u043E\u0432.",
         saveLogoImage: "\u0421\u043E\u0445\u0440\u0430\u043D\u044F\u0442\u044C \u043B\u043E\u0433\u043E\u0442\u0438\u043F\u044B",
         saveLogoImageDesc: "\u0421\u043A\u0430\u0447\u0438\u0432\u0430\u0442\u044C \u0438 \u0441\u043E\u0445\u0440\u0430\u043D\u044F\u0442\u044C \u043B\u043E\u0433\u043E\u0442\u0438\u043F\u044B \u0444\u0438\u043B\u044C\u043C\u043E\u0432/\u0441\u0435\u0440\u0438\u0430\u043B\u043E\u0432.",
+        imageFileNameFormat: "\u0424\u043E\u0440\u043C\u0430\u0442 \u0438\u043C\u0435\u043D\u0438 \u0444\u0430\u0439\u043B\u0430 \u0438\u0437\u043E\u0431\u0440\u0430\u0436\u0435\u043D\u0438\u044F",
+        imageFileNameFormatDesc: "\u0412\u0432\u0435\u0434\u0438\u0442\u0435 \u0444\u043E\u0440\u043C\u0430\u0442 \u0438\u043C\u0435\u043D\u0438 \u0444\u0430\u0439\u043B\u0430 \u0434\u043B\u044F \u0438\u0437\u043E\u0431\u0440\u0430\u0436\u0435\u043D\u0438\u0439.",
+        imageFileNameFormatPlaceholder: "\u041D\u0430\u043F\u0440\u0438\u043C\u0435\u0440: {{nameForFile}}_{{id}}_{{type}}",
         moviesHeading: "\u0424\u0438\u043B\u044C\u043C\u044B",
         movieFileName: "\u0418\u043C\u044F \u0444\u0430\u0439\u043B\u0430 \u0444\u0438\u043B\u044C\u043C\u0430",
         movieFileNameDesc: "\u0412\u0432\u0435\u0434\u0438\u0442\u0435 \u0444\u043E\u0440\u043C\u0430\u0442 \u0438\u043C\u0435\u043D\u0438 \u0444\u0430\u0439\u043B\u0430 \u0434\u043B\u044F \u0444\u0438\u043B\u044C\u043C\u043E\u0432.",
@@ -426,6 +429,9 @@ var init_i18n = __esm({
         saveCoverImageDesc: "Download and save movie/series cover/backdrop images.",
         saveLogoImage: "Save logo images",
         saveLogoImageDesc: "Download and save movie/series logo images.",
+        imageFileNameFormat: "Image file name format",
+        imageFileNameFormatDesc: "Enter the image file name format.",
+        imageFileNameFormatPlaceholder: "Example: {{nameForFile}}_{{id}}_{{type}}",
         moviesHeading: "Movies",
         movieFileName: "Movie file name",
         movieFileNameDesc: "Enter the movie file name format.",
@@ -732,10 +738,12 @@ function getImageExtension(url, mimeType) {
   }
   return "jpg";
 }
-function createImageFileName(movieShow, imageType, extension) {
-  const baseName = `${movieShow.nameForFile}_${movieShow.year}_${imageType}`;
-  const cleanedBaseName = replaceIllegalFileNameCharactersInString(baseName);
-  return `${cleanedBaseName}.${extension}`;
+function createImageFileName(movieShow, imageType, extension, imageFileNameFormat) {
+  var _a;
+  let fileNameFormat = imageFileNameFormat || "{{nameForFile}}";
+  fileNameFormat = fileNameFormat.replace(/{{nameForFile}}/g, movieShow.nameForFile || "unknown").replace(/{{id}}/g, movieShow.id.toString() || "0").replace(/{{type}}/g, ((_a = movieShow.type) == null ? void 0 : _a[0]) || "unknown").replace(/{{year}}/g, movieShow.year.toString());
+  const cleanedBaseName = replaceIllegalFileNameCharactersInString(fileNameFormat);
+  return `${cleanedBaseName}_${imageType}.${extension}`;
 }
 function extractCleanPath(imagePath) {
   if (!imagePath || imagePath.trim() === "") return "";
@@ -859,14 +867,14 @@ async function saveImageToVault(app, imageData, folderPath, fileName) {
   await vault.createBinary(finalPath, imageData);
   return finalPath;
 }
-async function downloadAndSaveImage(app, url, movieShow, imageType, folderPath) {
+async function downloadAndSaveImage(app, url, movieShow, imageType, folderPath, imageFileNameFormat) {
   try {
     if (!isValidImageUrl(url)) {
       return url;
     }
     const { data, mimeType } = await downloadImage(url);
     const extension = getImageExtension(url, mimeType);
-    const fileName = createImageFileName(movieShow, imageType, extension);
+    const fileName = createImageFileName(movieShow, imageType, extension, imageFileNameFormat);
     const localPath = await saveImageToVault(
       app,
       data,
@@ -932,7 +940,8 @@ async function processImages(app, movieShow, settings, progressCallback) {
             posterUrl,
             movieShow,
             "poster",
-            settings.imagesFolder
+            settings.imagesFolder,
+            settings.imageFileNameFormat
           );
           updatedMovieShow.posterMarkdown = createImageLink(localPath);
           updatedMovieShow.posterPath = [extractCleanPath(localPath)];
@@ -972,7 +981,8 @@ async function processImages(app, movieShow, settings, progressCallback) {
             coverUrl,
             movieShow,
             "cover",
-            settings.imagesFolder
+            settings.imagesFolder,
+            settings.imageFileNameFormat
           );
           updatedMovieShow.coverMarkdown = createImageLink(localPath);
           updatedMovieShow.coverPath = [extractCleanPath(localPath)];
@@ -1012,7 +1022,8 @@ async function processImages(app, movieShow, settings, progressCallback) {
             logoUrl,
             movieShow,
             "logo",
-            settings.imagesFolder
+            settings.imagesFolder,
+            settings.imageFileNameFormat
           );
           updatedMovieShow.logoMarkdown = createImageLink(localPath);
           updatedMovieShow.logoPath = [extractCleanPath(localPath)];
@@ -3013,7 +3024,8 @@ ${progressBar} ${current}/${total} (${percentage}%)`;
         imagesFolder: this.plugin.settings.imagesFolder,
         savePosterImage: this.plugin.settings.savePosterImage && movieShow.posterUrl.length > 0,
         saveCoverImage: this.plugin.settings.saveCoverImage && movieShow.coverUrl.length > 0,
-        saveLogoImage: this.plugin.settings.saveLogoImage && movieShow.logoUrl.length > 0
+        saveLogoImage: this.plugin.settings.saveLogoImage && movieShow.logoUrl.length > 0,
+        imageFileNameFormat: this.plugin.settings.imageFileNameFormat
       };
       const anyImageToDownload = imageSettings.savePosterImage || imageSettings.saveCoverImage || imageSettings.saveLogoImage;
       if (!anyImageToDownload) {
@@ -3171,6 +3183,8 @@ var DEFAULT_SETTINGS = {
   savePosterImage: true,
   saveCoverImage: false,
   saveLogoImage: false,
+  imageFileNameFormat: "{{nameForFile}}_{{id}}_{{type}}",
+  // Default format with name, id, and type
   // Mobile settings
   mobileCoverHeightMultiplier: 1.5
 };
@@ -3394,6 +3408,12 @@ var ObsidianTMDBSettingTab = class extends import_obsidian11.PluginSettingTab {
           await this.plugin.saveSettings();
         })
       );
+      new import_obsidian11.Setting(containerEl).setName(t("settings.imageFileNameFormat")).setDesc(t("settings.imageFileNameFormatDesc")).addText(
+        (text) => text.setPlaceholder(t("settings.imageFileNameFormatPlaceholder")).setValue(this.plugin.settings.imageFileNameFormat).onChange(async (value) => {
+          this.plugin.settings.imageFileNameFormat = value;
+          await this.plugin.saveSettings();
+        })
+      );
     }
     new import_obsidian11.Setting(containerEl).setName(t("settings.moviesHeading")).setHeading();
     new import_obsidian11.Setting(containerEl).setName(t("settings.movieFileName")).setDesc(t("settings.movieFileNameDesc")).addText(
@@ -3480,11 +3500,6 @@ var ObsidianTMDBSettingTab = class extends import_obsidian11.PluginSettingTab {
         await this.plugin.saveSettings();
       });
     });
-    new import_obsidian11.Setting(containerEl).setName(t("settings.mobileSettings")).setHeading();
-    new import_obsidian11.Setting(containerEl).setName(t("settings.mobileCoverHeightMultiplier")).setDesc(t("settings.mobileCoverHeightMultiplierDesc")).addSlider((slider) => slider.setLimits(0.5, 3, 0.1).setValue(this.plugin.settings.mobileCoverHeightMultiplier).onChange(async (value) => {
-      this.plugin.settings.mobileCoverHeightMultiplier = value;
-      await this.plugin.saveSettings();
-    }));
     new import_obsidian11.Setting(containerEl).setName(t("settings.directorsFileLocation")).setDesc(t("settings.directorsFileLocationDesc")).addSearch((cb) => {
       new FolderSuggest(this.app, cb.inputEl, (folder) => {
         this.plugin.settings.directorsPath = folder;
@@ -3865,7 +3880,8 @@ ${t("common.status")}: "${escapedStatus}"
             imagesFolder: this.settings.imagesFolder,
             savePosterImage: this.settings.savePosterImage,
             saveCoverImage: this.settings.saveCoverImage,
-            saveLogoImage: this.settings.saveLogoImage
+            saveLogoImage: this.settings.saveLogoImage,
+            imageFileNameFormat: this.settings.imageFileNameFormat
           }
         );
       }
@@ -4176,7 +4192,8 @@ ${renderedContents}`;
             imagesFolder: this.settings.imagesFolder,
             savePosterImage: this.settings.savePosterImage,
             saveCoverImage: this.settings.saveCoverImage,
-            saveLogoImage: this.settings.saveLogoImage
+            saveLogoImage: this.settings.saveLogoImage,
+            imageFileNameFormat: this.settings.imageFileNameFormat
           },
           (current, total, currentTask) => {
             if (total > 0) {

@@ -161,6 +161,9 @@ export interface Translations {
 		saveCoverImageDesc: string;
 		saveLogoImage: string;
 		saveLogoImageDesc: string;
+		imageFileNameFormat: string;
+		imageFileNameFormatDesc: string;
+		imageFileNameFormatPlaceholder: string;
 		moviesHeading: string;
 		movieFileName: string;
 		movieFileNameDesc: string;
@@ -401,6 +404,9 @@ const ru: Translations = {
 			"Скачивать и сохранять обложки/бэкдропы фильмов/сериалов.",
 		saveLogoImage: "Сохранять логотипы",
 		saveLogoImageDesc: "Скачивать и сохранять логотипы фильмов/сериалов.",
+		imageFileNameFormat: "Формат имени файла изображения",
+		imageFileNameFormatDesc: "Введите формат имени файла для изображений.",
+		imageFileNameFormatPlaceholder: "Например: {{nameForFile}}_{{id}}_{{type}}",
 		moviesHeading: "Фильмы",
 		movieFileName: "Имя файла фильма",
 		movieFileNameDesc: "Введите формат имени файла для фильмов.",
@@ -636,6 +642,9 @@ const en: Translations = {
 			"Download and save movie/series cover/backdrop images.",
 		saveLogoImage: "Save logo images",
 		saveLogoImageDesc: "Download and save movie/series logo images.",
+		imageFileNameFormat: "Image file name format",
+		imageFileNameFormatDesc: "Enter the image file name format.",
+		imageFileNameFormatPlaceholder: "Example: {{nameForFile}}_{{id}}_{{type}}",
 		moviesHeading: "Movies",
 		movieFileName: "Movie file name",
 		movieFileNameDesc: "Enter the movie file name format.",

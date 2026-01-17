@@ -471,6 +471,7 @@ export default class ObsidianTMDBPlugin extends Plugin {
 						savePosterImage: this.settings.savePosterImage,
 						saveCoverImage: this.settings.saveCoverImage,
 						saveLogoImage: this.settings.saveLogoImage,
+						imageFileNameFormat: this.settings.imageFileNameFormat,
 					}
 				);
 			}
@@ -901,6 +902,7 @@ export default class ObsidianTMDBPlugin extends Plugin {
 						savePosterImage: this.settings.savePosterImage,
 						saveCoverImage: this.settings.saveCoverImage,
 						saveLogoImage: this.settings.saveLogoImage,
+						imageFileNameFormat: this.settings.imageFileNameFormat,
 					},
 					(current: number, total: number, currentTask: string) => {
 						// Progress callback to show status

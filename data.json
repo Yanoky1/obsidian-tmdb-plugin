@@ -17,5 +17,6 @@
   "savePosterImage": true,
   "saveCoverImage": true,
   "saveLogoImage": true,
+  "imageFileNameFormat": "{{nameForFile}}",
   "mobileCoverHeightMultiplier": 1.4
 }

@@ -81,11 +81,23 @@ function getImageExtension(url: string, mimeType?: string): string {
 function createImageFileName(
 	movieShow: MovieShow,
 	imageType: string,
-	extension: string
+	extension: string,
+	imageFileNameFormat?: string
 ): string {
-	const baseName = `${movieShow.nameForFile}_${movieShow.year}_${imageType}`;
-	const cleanedBaseName = replaceIllegalFileNameCharactersInString(baseName);
-	return `${cleanedBaseName}.${extension}`;
+	// Use the custom format if provided, otherwise use the default
+	let fileNameFormat = imageFileNameFormat || "{{nameForFile}}";
+
+	// Replace placeholders with actual values
+	fileNameFormat = fileNameFormat
+		.replace(/{{nameForFile}}/g, movieShow.nameForFile || "unknown")
+		.replace(/{{id}}/g, movieShow.id.toString() || "0")
+		.replace(/{{type}}/g, movieShow.type?.[0] || "unknown")
+		.replace(/{{year}}/g, movieShow.year.toString());
+
+	const cleanedBaseName = replaceIllegalFileNameCharactersInString(fileNameFormat);
+
+	// Append the image type suffix independently of the custom format
+	return `${cleanedBaseName}_${imageType}.${extension}`;
 }
 
 /**
@@ -280,7 +292,8 @@ export async function downloadAndSaveImage(
 	url: string,
 	movieShow: MovieShow,
 	imageType: string,
-	folderPath: string
+	folderPath: string,
+	imageFileNameFormat?: string
 ): Promise<string> {
 	try {
 		// Return URL as-is if it's not HTTP/HTTPS
@@ -290,7 +303,7 @@ export async function downloadAndSaveImage(
 
 		const { data, mimeType } = await downloadImage(url);
 		const extension = getImageExtension(url, mimeType);
-		const fileName = createImageFileName(movieShow, imageType, extension);
+		const fileName = createImageFileName(movieShow, imageType, extension, imageFileNameFormat);
 		const localPath = await saveImageToVault(
 			app,
 			data,
@@ -380,6 +393,7 @@ export async function processImages(
 		| "savePosterImage"
 		| "saveCoverImage"
 		| "saveLogoImage"
+		| "imageFileNameFormat"
 	>,
 	progressCallback?: ProgressCallback
 ): Promise<MovieShow> {
@@ -422,7 +436,8 @@ export async function processImages(
 						posterUrl,
 						movieShow,
 						"poster",
-						settings.imagesFolder
+						settings.imagesFolder,
+						settings.imageFileNameFormat
 					);
 					updatedMovieShow.posterMarkdown =
 						createImageLink(localPath);
@@ -475,7 +490,8 @@ export async function processImages(
 						coverUrl,
 						movieShow,
 						"cover",
-						settings.imagesFolder
+						settings.imagesFolder,
+						settings.imageFileNameFormat
 					);
 					updatedMovieShow.coverMarkdown = createImageLink(localPath);
 					updatedMovieShow.coverPath = [extractCleanPath(localPath)];
@@ -524,7 +540,8 @@ export async function processImages(
 						logoUrl,
 						movieShow,
 						"logo",
-						settings.imagesFolder
+						settings.imagesFolder,
+						settings.imageFileNameFormat
 					);
 					updatedMovieShow.logoMarkdown = createImageLink(localPath);
 					updatedMovieShow.logoPath = [extractCleanPath(localPath)];

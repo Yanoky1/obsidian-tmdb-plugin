@@ -44,6 +44,7 @@ export interface ObsidianTMDBPluginSettings {
 	savePosterImage: boolean;
 	saveCoverImage: boolean;
 	saveLogoImage: boolean;
+	imageFileNameFormat: string;
 
 	// Mobile settings
 	mobileCoverHeightMultiplier: number;
@@ -72,6 +73,7 @@ export const DEFAULT_SETTINGS: ObsidianTMDBPluginSettings = {
 	savePosterImage: true,
 	saveCoverImage: false,
 	saveLogoImage: false,
+	imageFileNameFormat: "{{nameForFile}}_{{id}}_{{type}}", // Default format with name, id, and type
 
 	// Mobile settings
 	mobileCoverHeightMultiplier: 1.5,
@@ -418,6 +420,19 @@ export class ObsidianTMDBSettingTab extends PluginSettingTab {
 							await this.plugin.saveSettings();
 						})
 				);
+
+			new Setting(containerEl)
+				.setName(t("settings.imageFileNameFormat"))
+				.setDesc(t("settings.imageFileNameFormatDesc"))
+				.addText((text) =>
+					text
+						.setPlaceholder(t("settings.imageFileNameFormatPlaceholder"))
+						.setValue(this.plugin.settings.imageFileNameFormat)
+						.onChange(async (value) => {
+							this.plugin.settings.imageFileNameFormat = value;
+							await this.plugin.saveSettings();
+						})
+				);
 		}
 
 		// Movies settings section
@@ -543,22 +558,6 @@ export class ObsidianTMDBSettingTab extends PluginSettingTab {
 						await this.plugin.saveSettings();
 					});
 			});
-
-		// Mobile settings section
-		new Setting(containerEl)
-			.setName(t("settings.mobileSettings"))
-			.setHeading();
-
-		new Setting(containerEl)
-			.setName(t("settings.mobileCoverHeightMultiplier"))
-			.setDesc(t("settings.mobileCoverHeightMultiplierDesc"))
-			.addSlider(slider => slider
-				.setLimits(0.5, 3, 0.1)
-				.setValue(this.plugin.settings.mobileCoverHeightMultiplier)
-				.onChange(async (value) => {
-					this.plugin.settings.mobileCoverHeightMultiplier = value;
-					await this.plugin.saveSettings();
-				}));
 
 		// Папка для режиссеров
 		new Setting(containerEl)

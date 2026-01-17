@@ -287,6 +287,7 @@ export class ItemsSuggestModal extends SuggestModal<TMDBSuggestItem> {
                 savePosterImage: this.plugin.settings.savePosterImage && movieShow.posterUrl.length > 0,
                 saveCoverImage: this.plugin.settings.saveCoverImage && movieShow.coverUrl.length > 0,
                 saveLogoImage: this.plugin.settings.saveLogoImage && movieShow.logoUrl.length > 0,
+                imageFileNameFormat: this.plugin.settings.imageFileNameFormat,
             };
 
             const anyImageToDownload =
