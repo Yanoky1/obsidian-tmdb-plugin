@@ -4,9 +4,9 @@ import { RatingInputModal } from "./rating_input_modal";
 
 export class StatusSelectionModal extends Modal {
 	private selectedStatus: string | null = null;
-	private onChooseStatus: (status: string | null, rating?: number | null) => void;
+	private onChooseStatus: (status: string | null, rating?: number | string | null) => void;
 
-	constructor(app: App, private statusOptions: string[], onChooseStatus: (status: string | null, rating?: number | null) => void) {
+	constructor(app: App, private statusOptions: string[], onChooseStatus: (status: string | null, rating?: number | string | null) => void) {
 		super(app);
 		this.onChooseStatus = onChooseStatus;
 	}

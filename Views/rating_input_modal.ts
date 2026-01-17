@@ -3,9 +3,9 @@ import { t } from "../i18n";
 
 export class RatingInputModal extends Modal {
 	private rating: number | null = null;
-	private onChooseRating: (rating: number | null) => void;
+	private onChooseRating: (rating: number | string | null) => void;
 
-	constructor(app: App, onChooseRating: (rating: number | null) => void) {
+	constructor(app: App, onChooseRating: (rating: number | string | null) => void) {
 		super(app);
 		this.onChooseRating = onChooseRating;
 	}
@@ -102,6 +102,14 @@ export class RatingInputModal extends Modal {
 			)
 			.addButton((btn) =>
 				btn
+					.setButtonText(t("common.skip"))
+					.onClick(() => {
+						this.rating = null; // Set rating to null to indicate skip
+						this.close();
+					})
+			)
+			.addButton((btn) =>
+				btn
 					.setButtonText(t("common.cancel"))
 					.onClick(() => {
 						this.rating = null;
@@ -162,6 +170,7 @@ export class RatingInputModal extends Modal {
 	onClose() {
 		const { contentEl } = this;
 		contentEl.empty();
-		this.onChooseRating(this.rating);
+		// Return empty string if rating is null (indicating skip was pressed)
+		this.onChooseRating(this.rating === null ? "" : this.rating);
 	}
 }

@@ -77,6 +77,7 @@ var init_i18n = __esm({
       common: {
         ok: "\u041E\u041A",
         cancel: "\u041E\u0442\u043C\u0435\u043D\u0430",
+        skip: "\u041F\u0440\u043E\u043F\u0443\u0441\u0442\u0438\u0442\u044C",
         save: "\u0421\u043E\u0445\u0440\u0430\u043D\u0438\u0442\u044C",
         loading: "\u0417\u0430\u0433\u0440\u0443\u0437\u043A\u0430...",
         error: "\u041E\u0448\u0438\u0431\u043A\u0430",
@@ -285,6 +286,7 @@ var init_i18n = __esm({
       common: {
         ok: "OK",
         cancel: "Cancel",
+        skip: "Skip",
         save: "Save",
         loading: "Loading...",
         error: "Error",
@@ -2312,19 +2314,20 @@ var TMDBProvider = class {
     if (!this.validator.isValidToken(token)) {
       throw new Error(t("provider.tokenRequiredForMovie"));
     }
+    const processedUserRating = userRating === "" ? void 0 : userRating;
     if (type === "tv-series") {
       const tvData = await this.getTVShowDetails(id, token);
-      return this.dataFormatter.createMovieShowFrom(tvData, userRating);
+      return this.dataFormatter.createMovieShowFrom(tvData, processedUserRating);
     } else if (type === "movie") {
       const movieData = await this.getMovieDetails(id, token);
-      return this.dataFormatter.createMovieShowFrom(movieData, userRating);
+      return this.dataFormatter.createMovieShowFrom(movieData, processedUserRating);
     }
     try {
       const movieData = await this.getMovieDetails(id, token);
-      return this.dataFormatter.createMovieShowFrom(movieData, userRating);
+      return this.dataFormatter.createMovieShowFrom(movieData, processedUserRating);
     } catch (error) {
       const tvData = await this.getTVShowDetails(id, token);
-      return this.dataFormatter.createMovieShowFrom(tvData, userRating);
+      return this.dataFormatter.createMovieShowFrom(tvData, processedUserRating);
     }
   }
   /**
@@ -2702,6 +2705,11 @@ var RatingInputModal = class extends import_obsidian6.Modal {
         this.close();
       })
     ).addButton(
+      (btn) => btn.setButtonText(t("common.skip")).onClick(() => {
+        this.rating = null;
+        this.close();
+      })
+    ).addButton(
       (btn) => btn.setButtonText(t("common.cancel")).onClick(() => {
         this.rating = null;
         this.close();
@@ -2757,7 +2765,7 @@ var RatingInputModal = class extends import_obsidian6.Modal {
   onClose() {
     const { contentEl } = this;
     contentEl.empty();
-    this.onChooseRating(this.rating);
+    this.onChooseRating(this.rating === null ? "" : this.rating);
   }
 };
 
@@ -2982,7 +2990,7 @@ ${progressBar} ${current}/${total} (${percentage}%)`;
           ];
           new StatusSelectionModal(this.app, statusOptions, (selectedStatus, rating) => {
             movieShow.status = selectedStatus || t("status.willWatch");
-            if (rating !== null && rating !== void 0) {
+            if (rating !== null && rating !== void 0 && rating !== "") {
               movieShow.userRating = rating;
             }
             resolve(movieShow);
@@ -3885,7 +3893,7 @@ ${t("common.status")}: "${escapedStatus}"
           }
         );
       }
-      if (userRating !== null) {
+      if (userRating !== null && userRating !== void 0 && userRating !== "") {
         movieShow.userRating = userRating;
       }
       if (customStatus) {
@@ -4206,7 +4214,7 @@ ${renderedContents}`;
         imageNotice.hide();
         new import_obsidian13.Notice("Images processed!");
       }
-      if (userRating !== null) {
+      if (userRating !== null && userRating !== void 0 && userRating !== "") {
         movieShow.userRating = userRating;
       }
       if (customStatus) {

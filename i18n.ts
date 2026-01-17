@@ -10,6 +10,7 @@ export interface Translations {
 	common: {
 		ok: string;
 		cancel: string;
+		skip: string;
 		save: string;
 		loading: string;
 		error: string;
@@ -230,6 +231,7 @@ const ru: Translations = {
 	common: {
 		ok: "ОК",
 		cancel: "Отмена",
+		skip: "Пропустить",
 		save: "Сохранить",
 		loading: "Загрузка...",
 		error: "Ошибка",
@@ -473,6 +475,7 @@ const en: Translations = {
 	common: {
 		ok: "OK",
 		cancel: "Cancel",
+		skip: "Skip",
 		save: "Save",
 		loading: "Loading...",
 		error: "Error",

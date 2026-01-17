@@ -228,8 +228,8 @@ export class ItemsSuggestModal extends SuggestModal<TMDBSuggestItem> {
                         // Store the selected status in the movieShow object
                         (movieShow as any).status = selectedStatus || t("status.willWatch");
 
-                        // Store the rating if provided
-                        if (rating !== null && rating !== undefined) {
+                        // Store the rating if provided and it's not an empty string
+                        if (rating !== null && rating !== undefined && rating !== "") {
                             (movieShow as any).userRating = rating;
                         }
 

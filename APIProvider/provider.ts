@@ -259,7 +259,7 @@ export class TMDBProvider {
 	/**
 	 * Retrieves detailed movie/TV show information by ID and type
 	 */
-	public async getMovieById(id: number, token: string, type?: string, userRating?: number): Promise<MovieShow> {
+	public async getMovieById(id: number, token: string, type?: string, userRating?: number | string): Promise<MovieShow> {
 		if (!this.validator.isValidMovieId(id)) {
 			throw new Error(t("provider.invalidMovieId"));
 		}
@@ -268,21 +268,24 @@ export class TMDBProvider {
 			throw new Error(t("provider.tokenRequiredForMovie"));
 		}
 
+		// Convert empty string to undefined to maintain compatibility with DataFormatter
+		const processedUserRating = userRating === "" ? undefined : userRating as number | undefined;
+
 		if (type === 'tv-series') {
 			const tvData = await this.getTVShowDetails(id, token);
-			return this.dataFormatter.createMovieShowFrom(tvData, userRating);
+			return this.dataFormatter.createMovieShowFrom(tvData, processedUserRating as number | undefined);
 		} else if (type === 'movie') {
 			const movieData = await this.getMovieDetails(id, token);
-			return this.dataFormatter.createMovieShowFrom(movieData, userRating);
+			return this.dataFormatter.createMovieShowFrom(movieData, processedUserRating as number | undefined);
 		}
 
 		// Fallback: try as movie first, then as TV show if fails
 		try {
 			const movieData = await this.getMovieDetails(id, token);
-			return this.dataFormatter.createMovieShowFrom(movieData, userRating);
+			return this.dataFormatter.createMovieShowFrom(movieData, processedUserRating as number | undefined);
 		} catch (error) {
 			const tvData = await this.getTVShowDetails(id, token);
-			return this.dataFormatter.createMovieShowFrom(tvData, userRating);
+			return this.dataFormatter.createMovieShowFrom(tvData, processedUserRating as number | undefined);
 		}
 	}
 

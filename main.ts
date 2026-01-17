@@ -430,7 +430,7 @@ export default class ObsidianTMDBPlugin extends Plugin {
 	}
 
 	// Create a new note in background without opening it
-	private async createNoteWithRatingInBackground(originalFile: TFile, item: TMDBSuggestItem, userRating: number | null, customStatus: string | null = null, hasUserRating: boolean = false): Promise<void> {
+	private async createNoteWithRatingInBackground(originalFile: TFile, item: TMDBSuggestItem, userRating: number | string | null, customStatus: string | null = null, hasUserRating: boolean = false): Promise<void> {
 		if (!item || !this.settings.apiToken) {
 			return;
 		}
@@ -477,7 +477,7 @@ export default class ObsidianTMDBPlugin extends Plugin {
 			}
 
 			// If we have a user rating, store it in the movieShow object to ensure it's preserved
-			if (userRating !== null) {
+			if (userRating !== null && userRating !== undefined && userRating !== "") {
 				(movieShow as any).userRating = userRating;
 			}
 
@@ -840,7 +840,7 @@ export default class ObsidianTMDBPlugin extends Plugin {
 	}
 
 	// Update the original note with TMDB data and user rating
-	private async createNoteWithRating(item: TMDBSuggestItem, userRating: number | null, customStatus: string | null = null, hasUserRating: boolean = false): Promise<void> {
+	private async createNoteWithRating(item: TMDBSuggestItem, userRating: number | string | null, customStatus: string | null = null, hasUserRating: boolean = false): Promise<void> {
 		if (!item || !this.settings.apiToken) {
 			return;
 		}
@@ -919,7 +919,7 @@ export default class ObsidianTMDBPlugin extends Plugin {
 			}
 
 			// If we have a user rating, store it in the movieShow object to ensure it's preserved
-			if (userRating !== null) {
+			if (userRating !== null && userRating !== undefined && userRating !== "") {
 				(movieShow as any).userRating = userRating;
 			}
 
