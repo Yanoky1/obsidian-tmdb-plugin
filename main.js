@@ -127,7 +127,10 @@ var init_i18n = __esm({
         skip: "\u041F\u0440\u043E\u043F\u0443\u0441\u0442\u0438\u0442\u044C",
         approve: "\u041E\u0434\u043E\u0431\u0440\u0438\u0442\u044C",
         selectThis: "\u0412\u044B\u0431\u0440\u0430\u0442\u044C \u044D\u0442\u043E",
-        loadingAlternativeImages: "\u0417\u0430\u0433\u0440\u0443\u0437\u043A\u0430 \u0430\u043B\u044C\u0442\u0435\u0440\u043D\u0430\u0442\u0438\u0432\u043D\u044B\u0445 \u0438\u0437\u043E\u0431\u0440\u0430\u0436\u0435\u043D\u0438\u0439..."
+        loadingAlternativeImages: "\u0417\u0430\u0433\u0440\u0443\u0437\u043A\u0430 \u0430\u043B\u044C\u0442\u0435\u0440\u043D\u0430\u0442\u0438\u0432\u043D\u044B\u0445 \u0438\u0437\u043E\u0431\u0440\u0430\u0436\u0435\u043D\u0438\u0439...",
+        rateMovie: "\u041E\u0446\u0435\u043D\u0438\u0442\u0435 \u0444\u0438\u043B\u044C\u043C",
+        ratingValue: "\u0417\u043D\u0430\u0447\u0435\u043D\u0438\u0435 \u043E\u0446\u0435\u043D\u043A\u0438",
+        enterRatingPlaceholder: "\u0412\u0432\u0435\u0434\u0438\u0442\u0435 \u043E\u0446\u0435\u043D\u043A\u0443 \u043E\u0442 0 \u0434\u043E 10"
       },
       suggesters: {
         fileListError: "\u041E\u0448\u0438\u0431\u043A\u0430 \u043F\u0440\u0438 \u043F\u043E\u043B\u0443\u0447\u0435\u043D\u0438\u0438 \u0441\u043F\u0438\u0441\u043A\u0430 \u0444\u0430\u0439\u043B\u043E\u0432:",
@@ -329,7 +332,10 @@ var init_i18n = __esm({
         skip: "Skip",
         approve: "Approve",
         selectThis: "Select this",
-        loadingAlternativeImages: "Loading alternative images..."
+        loadingAlternativeImages: "Loading alternative images...",
+        rateMovie: "Rate the movie",
+        ratingValue: "Rating value",
+        enterRatingPlaceholder: "Enter rating from 0 to 10"
       },
       suggesters: {
         fileListError: "Error getting file list:",
@@ -1119,7 +1125,7 @@ __export(main_exports, {
   default: () => ObsidianTMDBPlugin
 });
 module.exports = __toCommonJS(main_exports);
-var import_obsidian12 = require("obsidian");
+var import_obsidian13 = require("obsidian");
 
 // Views/search_modal.ts
 var import_obsidian3 = require("obsidian");
@@ -2463,7 +2469,7 @@ var SearchModal = class extends import_obsidian3.Modal {
 };
 
 // Views/suggest_modal.ts
-var import_obsidian7 = require("obsidian");
+var import_obsidian8 = require("obsidian");
 init_imageUtils();
 
 // Views/image_selection_modal.ts
@@ -2609,9 +2615,143 @@ var ImageApprovalModal = class extends import_obsidian5.Modal {
 };
 
 // Views/status_selection_modal.ts
+var import_obsidian7 = require("obsidian");
+init_i18n();
+
+// Views/rating_input_modal.ts
 var import_obsidian6 = require("obsidian");
 init_i18n();
-var StatusSelectionModal = class extends import_obsidian6.Modal {
+var RatingInputModal = class extends import_obsidian6.Modal {
+  constructor(app, onChooseRating) {
+    super(app);
+    this.rating = null;
+    this.onChooseRating = onChooseRating;
+  }
+  onOpen() {
+    const { contentEl } = this;
+    contentEl.empty();
+    contentEl.addClass("TMDB-plugin__rating-input-modal");
+    contentEl.createEl("h2", { text: t("modals.rateMovie") });
+    const ratingContainer = contentEl.createDiv({ cls: "rating-input-container" });
+    const numberRatingContainer = ratingContainer.createDiv({ cls: "number-rating" });
+    for (let i = 0; i <= 10; i++) {
+      const numberButton = numberRatingContainer.createSpan({
+        text: i.toString(),
+        cls: "number-button",
+        attr: { "data-rating": i.toString() }
+      });
+      numberButton.style.fontSize = "1rem";
+      numberButton.style.cursor = "pointer";
+      numberButton.style.margin = "0 1px";
+      numberButton.style.padding = "6px 8px";
+      numberButton.style.border = "2px solid #d1d5db";
+      numberButton.style.borderRadius = "4px";
+      numberButton.style.display = "inline-block";
+      numberButton.style.textAlign = "center";
+      numberButton.style.width = "30px";
+      numberButton.style.height = "30px";
+      numberButton.style.lineHeight = "18px";
+      numberButton.style.boxSizing = "border-box";
+      numberButton.addEventListener("click", () => {
+        this.rating = i;
+        this.updateNumberDisplay(i);
+      });
+      numberButton.addEventListener("mouseover", () => {
+        this.highlightNumbers(i);
+      });
+      numberButton.addEventListener("mouseout", () => {
+        this.resetNumberDisplay();
+        if (this.rating !== null) {
+          this.updateNumberDisplay(this.rating);
+        }
+      });
+    }
+    const numericInputContainer = ratingContainer.createDiv({ cls: "numeric-input" });
+    numericInputContainer.createEl("label", { text: `${t("modals.ratingValue")}: ` });
+    const numericInput = numericInputContainer.createEl("input", {
+      type: "number",
+      placeholder: t("modals.enterRatingPlaceholder")
+    });
+    numericInput.setAttribute("min", "0");
+    numericInput.setAttribute("max", "10");
+    numericInput.setAttribute("step", "0.5");
+    numericInput.addEventListener("input", (e) => {
+      const value = parseFloat(e.target.value);
+      if (!isNaN(value) && value >= 0 && value <= 10) {
+        this.rating = value;
+        this.updateNumberDisplay(Math.round(value));
+      } else if (e.target.value === "") {
+        this.rating = null;
+        this.resetNumberDisplay();
+      }
+    });
+    const buttonContainer = contentEl.createDiv({ cls: "modal-button-container" });
+    new import_obsidian6.Setting(buttonContainer).addButton(
+      (btn) => btn.setButtonText(t("common.ok")).setCta().onClick(() => {
+        this.close();
+      })
+    ).addButton(
+      (btn) => btn.setButtonText(t("common.cancel")).onClick(() => {
+        this.rating = null;
+        this.close();
+      })
+    );
+  }
+  updateNumberDisplay(selectedRating) {
+    const numberButtons = this.contentEl.querySelectorAll(".number-button");
+    numberButtons.forEach((button) => {
+      const buttonElement = button;
+      const ratingValue = parseInt(buttonElement.getAttribute("data-rating") || "0");
+      if (ratingValue === selectedRating) {
+        buttonElement.style.backgroundColor = "#3b82f6";
+        buttonElement.style.color = "white";
+        buttonElement.style.borderColor = "#3b82f6";
+      } else {
+        buttonElement.style.backgroundColor = "";
+        buttonElement.style.color = "";
+        buttonElement.style.borderColor = "#d1d5db";
+      }
+    });
+  }
+  highlightNumbers(toRating) {
+    const numberButtons = this.contentEl.querySelectorAll(".number-button");
+    numberButtons.forEach((button) => {
+      const buttonElement = button;
+      const ratingValue = parseInt(buttonElement.getAttribute("data-rating") || "0");
+      if (ratingValue <= toRating) {
+        buttonElement.style.backgroundColor = "#93c5fd";
+        buttonElement.style.color = "black";
+      } else {
+        buttonElement.style.backgroundColor = "";
+        buttonElement.style.color = "";
+      }
+    });
+  }
+  resetNumberDisplay() {
+    const numberButtons = this.contentEl.querySelectorAll(".number-button");
+    numberButtons.forEach((button) => {
+      const buttonElement = button;
+      const ratingValue = parseInt(buttonElement.getAttribute("data-rating") || "0");
+      if (this.rating !== null && ratingValue === this.rating) {
+        buttonElement.style.backgroundColor = "#3b82f6";
+        buttonElement.style.color = "white";
+        buttonElement.style.borderColor = "#3b82f6";
+      } else {
+        buttonElement.style.backgroundColor = "";
+        buttonElement.style.color = "";
+        buttonElement.style.borderColor = "#d1d5db";
+      }
+    });
+  }
+  onClose() {
+    const { contentEl } = this;
+    contentEl.empty();
+    this.onChooseRating(this.rating);
+  }
+};
+
+// Views/status_selection_modal.ts
+var StatusSelectionModal = class extends import_obsidian7.Modal {
   constructor(app, statusOptions, onChooseStatus) {
     super(app);
     this.statusOptions = statusOptions;
@@ -2633,14 +2773,23 @@ var StatusSelectionModal = class extends import_obsidian6.Modal {
       };
       const emoji = statusEmojis[status] || "\u2B50";
       const displayName = `${emoji} ${status}`;
-      const setting = new import_obsidian6.Setting(optionsContainer).setName(displayName);
+      const setting = new import_obsidian7.Setting(optionsContainer).setName(displayName);
       setting.settingEl.style.cursor = "pointer";
       setting.settingEl.onclick = () => {
         this.selectedStatus = status;
-        this.close();
+        if (status === t("status.haveWatched")) {
+          this.close();
+          setTimeout(() => {
+            new RatingInputModal(this.app, (rating) => {
+              this.onChooseStatus(this.selectedStatus, rating);
+            }).open();
+          }, 100);
+        } else {
+          this.close();
+        }
       };
     });
-    const skipSetting = new import_obsidian6.Setting(contentEl).setName(t("status.skip")).setDesc(`${t("status.useDefault")} (${t("status.defaultStatus")})`);
+    const skipSetting = new import_obsidian7.Setting(contentEl).setName(t("status.skip")).setDesc(`${t("status.useDefault")} (${t("status.defaultStatus")})`);
     skipSetting.settingEl.style.cursor = "pointer";
     skipSetting.settingEl.onclick = () => {
       this.selectedStatus = null;
@@ -2650,7 +2799,9 @@ var StatusSelectionModal = class extends import_obsidian6.Modal {
   onClose() {
     const { contentEl } = this;
     contentEl.empty();
-    this.onChooseStatus(this.selectedStatus);
+    if (this.selectedStatus !== t("status.haveWatched")) {
+      this.onChooseStatus(this.selectedStatus, null);
+    }
   }
 };
 
@@ -2660,7 +2811,7 @@ var toImageInfoArray = (items) => {
   if (!items) return [];
   return items.map((item) => typeof item === "string" ? { url: item } : item);
 };
-var ItemsSuggestModal = class extends import_obsidian7.SuggestModal {
+var ItemsSuggestModal = class extends import_obsidian8.SuggestModal {
   constructor(plugin, suggestion, onChoose) {
     super(plugin.app);
     this.plugin = plugin;
@@ -2734,7 +2885,7 @@ var ItemsSuggestModal = class extends import_obsidian7.SuggestModal {
   }
   updateStatus(message, persistent = true) {
     this.hideLoadingNotice();
-    this.loadingNotice = new import_obsidian7.Notice(message, persistent ? 0 : 3e3);
+    this.loadingNotice = new import_obsidian8.Notice(message, persistent ? 0 : 3e3);
   }
   hideLoadingNotice() {
     if (this.loadingNotice) {
@@ -2768,12 +2919,12 @@ ${progressBar} ${current}/${total} (${percentage}%)`;
   validateInput(item) {
     var _a;
     if (!(item == null ? void 0 : item.id) || item.id <= 0) {
-      new import_obsidian7.Notice(t("modals.errorMovieData"));
+      new import_obsidian8.Notice(t("modals.errorMovieData"));
       this.onChoose(new Error(t("modals.errorMovieData")));
       return false;
     }
     if (!((_a = this.token) == null ? void 0 : _a.trim())) {
-      new import_obsidian7.Notice(t("modals.needApiToken"));
+      new import_obsidian8.Notice(t("modals.needApiToken"));
       this.onChoose(new Error(t("modals.needApiToken")));
       return false;
     }
@@ -2818,8 +2969,11 @@ ${progressBar} ${current}/${total} (${percentage}%)`;
             t("status.watching"),
             t("status.dropped")
           ];
-          new StatusSelectionModal(this.app, statusOptions, (selectedStatus) => {
+          new StatusSelectionModal(this.app, statusOptions, (selectedStatus, rating) => {
             movieShow.status = selectedStatus || t("status.willWatch");
+            if (rating !== null && rating !== void 0) {
+              movieShow.userRating = rating;
+            }
             resolve(movieShow);
           }).open();
         }
@@ -2830,14 +2984,14 @@ ${progressBar} ${current}/${total} (${percentage}%)`;
   handleSuccess(movieShow, hadImageProcessing = false) {
     this.hideLoadingNotice();
     if (!hadImageProcessing) {
-      new import_obsidian7.Notice(t("modals.movieInfoLoaded"));
+      new import_obsidian8.Notice(t("modals.movieInfoLoaded"));
     }
     this.onChoose(null, movieShow);
   }
   handleError(error) {
     this.hideLoadingNotice();
     const errorMessage = error instanceof Error ? error.message : t("modals.errorGettingDetails");
-    new import_obsidian7.Notice(errorMessage);
+    new import_obsidian8.Notice(errorMessage);
     console.error("Error getting movie details:", error);
     this.onChoose(error);
   }
@@ -2902,12 +3056,12 @@ ${progressBar} ${current}/${total} (${percentage}%)`;
 init_i18n();
 
 // Settings/settings.ts
-var import_obsidian10 = require("obsidian");
+var import_obsidian11 = require("obsidian");
 
 // Settings/Suggesters/FolderSuggester.ts
-var import_obsidian8 = require("obsidian");
+var import_obsidian9 = require("obsidian");
 init_i18n();
-var FolderSuggest = class extends import_obsidian8.AbstractInputSuggest {
+var FolderSuggest = class extends import_obsidian9.AbstractInputSuggest {
   constructor(app, textInputEl, onSelectFolder) {
     super(app, textInputEl);
     this.onSelectFolder = onSelectFolder;
@@ -2924,7 +3078,7 @@ var FolderSuggest = class extends import_obsidian8.AbstractInputSuggest {
       const folders = [];
       const lowerCaseInputStr = inputStr.toLowerCase();
       abstractFiles.forEach((folder) => {
-        if (folder instanceof import_obsidian8.TFolder && folder.path.toLowerCase().includes(lowerCaseInputStr)) {
+        if (folder instanceof import_obsidian9.TFolder && folder.path.toLowerCase().includes(lowerCaseInputStr)) {
           folders.push(folder);
         }
       });
@@ -2949,9 +3103,9 @@ var FolderSuggest = class extends import_obsidian8.AbstractInputSuggest {
 };
 
 // Settings/Suggesters/FileSuggester.ts
-var import_obsidian9 = require("obsidian");
+var import_obsidian10 = require("obsidian");
 init_i18n();
-var FileSuggest = class extends import_obsidian9.AbstractInputSuggest {
+var FileSuggest = class extends import_obsidian10.AbstractInputSuggest {
   constructor(app, textInputEl, onSelectFile) {
     super(app, textInputEl);
     this.onSelectFile = onSelectFile;
@@ -2968,7 +3122,7 @@ var FileSuggest = class extends import_obsidian9.AbstractInputSuggest {
       const files = [];
       const lowerCaseInputStr = inputStr.toLowerCase();
       abstractFiles.forEach((file) => {
-        if (file instanceof import_obsidian9.TFile && file.extension === "md" && file.path.toLowerCase().includes(lowerCaseInputStr)) {
+        if (file instanceof import_obsidian10.TFile && file.extension === "md" && file.path.toLowerCase().includes(lowerCaseInputStr)) {
           files.push(file);
         }
       });
@@ -3020,7 +3174,7 @@ var DEFAULT_SETTINGS = {
   // Mobile settings
   mobileCoverHeightMultiplier: 1.5
 };
-var ObsidianTMDBSettingTab = class extends import_obsidian10.PluginSettingTab {
+var ObsidianTMDBSettingTab = class extends import_obsidian11.PluginSettingTab {
   constructor(app, plugin) {
     super(app, plugin);
     this.plugin = plugin;
@@ -3085,7 +3239,7 @@ var ObsidianTMDBSettingTab = class extends import_obsidian10.PluginSettingTab {
    * Create folder selection setting
    */
   createFolderSetting(containerEl, name, desc, placeholder, currentValue, onValueChange) {
-    new import_obsidian10.Setting(containerEl).setName(name).setDesc(desc).addSearch((cb) => {
+    new import_obsidian11.Setting(containerEl).setName(name).setDesc(desc).addSearch((cb) => {
       try {
         new FolderSuggest(this.app, cb.inputEl, onValueChange);
       } catch (error) {
@@ -3098,7 +3252,7 @@ var ObsidianTMDBSettingTab = class extends import_obsidian10.PluginSettingTab {
    * Create template file selection setting
    */
   createTemplateSetting(containerEl, name, desc, placeholder, currentValue, onValueChange) {
-    new import_obsidian10.Setting(containerEl).setName(name).setDesc(desc).addSearch((cb) => {
+    new import_obsidian11.Setting(containerEl).setName(name).setDesc(desc).addSearch((cb) => {
       try {
         new FileSuggest(this.app, cb.inputEl, onValueChange);
       } catch (error) {
@@ -3111,7 +3265,7 @@ var ObsidianTMDBSettingTab = class extends import_obsidian10.PluginSettingTab {
     const { containerEl } = this;
     containerEl.empty();
     containerEl.classList.add("obsidian-TMDB-plugin__settings");
-    new import_obsidian10.Setting(containerEl).setName(t("settings.language")).setDesc(t("settings.languageDesc")).addDropdown((dropdown) => {
+    new import_obsidian11.Setting(containerEl).setName(t("settings.language")).setDesc(t("settings.languageDesc")).addDropdown((dropdown) => {
       const languages = getSupportedLanguages();
       languages.forEach((lang) => {
         dropdown.addOption(lang.code, lang.name);
@@ -3132,7 +3286,7 @@ var ObsidianTMDBSettingTab = class extends import_obsidian10.PluginSettingTab {
       href: apiSite
     });
     let tokenInputElement;
-    new import_obsidian10.Setting(containerEl).setName(t("settings.apiToken")).setDesc(apiKeyDesc).addText((text) => {
+    new import_obsidian11.Setting(containerEl).setName(t("settings.apiToken")).setDesc(apiKeyDesc).addText((text) => {
       const textComponent = text.setPlaceholder(t("settings.enterToken")).setValue(this.plugin.settings.apiToken).onChange(async (value) => {
         this.plugin.settings.apiToken = value.trim();
         this.plugin.settings.apiTokenValid = false;
@@ -3165,13 +3319,13 @@ var ObsidianTMDBSettingTab = class extends import_obsidian10.PluginSettingTab {
       (button) => button.setButtonText(t("settings.checkToken")).setCta().onClick(async () => {
         const token = this.plugin.settings.apiToken.trim();
         if (!token) {
-          new import_obsidian10.Notice(t("settings.enterToken"));
+          new import_obsidian11.Notice(t("settings.enterToken"));
           return;
         }
         button.setDisabled(true);
         button.setButtonText(t("settings.checking"));
         try {
-          new import_obsidian10.Notice(t("settings.checking"));
+          new import_obsidian11.Notice(t("settings.checking"));
           const isValid = await this.TMDBProvider.validateToken(
             token
           );
@@ -3181,7 +3335,7 @@ var ObsidianTMDBSettingTab = class extends import_obsidian10.PluginSettingTab {
             tokenInputElement,
             isValid
           );
-          new import_obsidian10.Notice(
+          new import_obsidian11.Notice(
             isValid ? t("settings.tokenValid") : t("settings.tokenInvalid")
           );
         } catch (error) {
@@ -3195,15 +3349,15 @@ var ObsidianTMDBSettingTab = class extends import_obsidian10.PluginSettingTab {
             tokenInputElement,
             false
           );
-          new import_obsidian10.Notice(t("settings.tokenError"));
+          new import_obsidian11.Notice(t("settings.tokenError"));
         } finally {
           button.setDisabled(false);
           button.setButtonText(t("settings.checkToken"));
         }
       })
     );
-    new import_obsidian10.Setting(containerEl).setName(t("settings.imagesHeading")).setHeading();
-    new import_obsidian10.Setting(containerEl).setName(t("settings.saveImagesLocally")).setDesc(t("settings.saveImagesLocallyDesc")).addToggle(
+    new import_obsidian11.Setting(containerEl).setName(t("settings.imagesHeading")).setHeading();
+    new import_obsidian11.Setting(containerEl).setName(t("settings.saveImagesLocally")).setDesc(t("settings.saveImagesLocallyDesc")).addToggle(
       (toggle) => toggle.setValue(this.plugin.settings.saveImagesLocally).onChange(async (value) => {
         this.plugin.settings.saveImagesLocally = value;
         await this.plugin.saveSettings();
@@ -3222,27 +3376,27 @@ var ObsidianTMDBSettingTab = class extends import_obsidian10.PluginSettingTab {
           await this.plugin.saveSettings();
         }
       );
-      new import_obsidian10.Setting(containerEl).setName(t("settings.savePosterImage")).setDesc(t("settings.savePosterImageDesc")).addToggle(
+      new import_obsidian11.Setting(containerEl).setName(t("settings.savePosterImage")).setDesc(t("settings.savePosterImageDesc")).addToggle(
         (toggle) => toggle.setValue(this.plugin.settings.savePosterImage).onChange(async (value) => {
           this.plugin.settings.savePosterImage = value;
           await this.plugin.saveSettings();
         })
       );
-      new import_obsidian10.Setting(containerEl).setName(t("settings.saveCoverImage")).setDesc(t("settings.saveCoverImageDesc")).addToggle(
+      new import_obsidian11.Setting(containerEl).setName(t("settings.saveCoverImage")).setDesc(t("settings.saveCoverImageDesc")).addToggle(
         (toggle) => toggle.setValue(this.plugin.settings.saveCoverImage).onChange(async (value) => {
           this.plugin.settings.saveCoverImage = value;
           await this.plugin.saveSettings();
         })
       );
-      new import_obsidian10.Setting(containerEl).setName(t("settings.saveLogoImage")).setDesc(t("settings.saveLogoImageDesc")).addToggle(
+      new import_obsidian11.Setting(containerEl).setName(t("settings.saveLogoImage")).setDesc(t("settings.saveLogoImageDesc")).addToggle(
         (toggle) => toggle.setValue(this.plugin.settings.saveLogoImage).onChange(async (value) => {
           this.plugin.settings.saveLogoImage = value;
           await this.plugin.saveSettings();
         })
       );
     }
-    new import_obsidian10.Setting(containerEl).setName(t("settings.moviesHeading")).setHeading();
-    new import_obsidian10.Setting(containerEl).setName(t("settings.movieFileName")).setDesc(t("settings.movieFileNameDesc")).addText(
+    new import_obsidian11.Setting(containerEl).setName(t("settings.moviesHeading")).setHeading();
+    new import_obsidian11.Setting(containerEl).setName(t("settings.movieFileName")).setDesc(t("settings.movieFileNameDesc")).addText(
       (text) => text.setPlaceholder(t("settings.movieFileNamePlaceholder")).setValue(this.plugin.settings.movieFileNameFormat).onChange(async (value) => {
         this.plugin.settings.movieFileNameFormat = value;
         await this.plugin.saveSettings();
@@ -3278,8 +3432,8 @@ var ObsidianTMDBSettingTab = class extends import_obsidian10.PluginSettingTab {
         await this.plugin.saveSettings();
       }
     );
-    new import_obsidian10.Setting(containerEl).setName(t("settings.seriesHeading")).setHeading();
-    new import_obsidian10.Setting(containerEl).setName(t("settings.seriesFileName")).setDesc(t("settings.seriesFileNameDesc")).addText(
+    new import_obsidian11.Setting(containerEl).setName(t("settings.seriesHeading")).setHeading();
+    new import_obsidian11.Setting(containerEl).setName(t("settings.seriesFileName")).setDesc(t("settings.seriesFileNameDesc")).addText(
       (text) => text.setPlaceholder(t("settings.seriesFileNamePlaceholder")).setValue(this.plugin.settings.seriesFileNameFormat).onChange(async (value) => {
         this.plugin.settings.seriesFileNameFormat = value;
         await this.plugin.saveSettings();
@@ -3315,8 +3469,8 @@ var ObsidianTMDBSettingTab = class extends import_obsidian10.PluginSettingTab {
         await this.plugin.saveSettings();
       }
     );
-    new import_obsidian10.Setting(containerEl).setName(t("settings.peopleHeading")).setHeading();
-    new import_obsidian10.Setting(containerEl).setName(t("settings.actorsFileLocation")).setDesc(t("settings.actorsFileLocationDesc")).addSearch((cb) => {
+    new import_obsidian11.Setting(containerEl).setName(t("settings.peopleHeading")).setHeading();
+    new import_obsidian11.Setting(containerEl).setName(t("settings.actorsFileLocation")).setDesc(t("settings.actorsFileLocationDesc")).addSearch((cb) => {
       new FolderSuggest(this.app, cb.inputEl, (folder) => {
         this.plugin.settings.actorsPath = folder;
         this.plugin.saveSettings();
@@ -3326,12 +3480,12 @@ var ObsidianTMDBSettingTab = class extends import_obsidian10.PluginSettingTab {
         await this.plugin.saveSettings();
       });
     });
-    new import_obsidian10.Setting(containerEl).setName(t("settings.mobileSettings")).setHeading();
-    new import_obsidian10.Setting(containerEl).setName(t("settings.mobileCoverHeightMultiplier")).setDesc(t("settings.mobileCoverHeightMultiplierDesc")).addSlider((slider) => slider.setLimits(0.5, 3, 0.1).setValue(this.plugin.settings.mobileCoverHeightMultiplier).onChange(async (value) => {
+    new import_obsidian11.Setting(containerEl).setName(t("settings.mobileSettings")).setHeading();
+    new import_obsidian11.Setting(containerEl).setName(t("settings.mobileCoverHeightMultiplier")).setDesc(t("settings.mobileCoverHeightMultiplierDesc")).addSlider((slider) => slider.setLimits(0.5, 3, 0.1).setValue(this.plugin.settings.mobileCoverHeightMultiplier).onChange(async (value) => {
       this.plugin.settings.mobileCoverHeightMultiplier = value;
       await this.plugin.saveSettings();
     }));
-    new import_obsidian10.Setting(containerEl).setName(t("settings.directorsFileLocation")).setDesc(t("settings.directorsFileLocationDesc")).addSearch((cb) => {
+    new import_obsidian11.Setting(containerEl).setName(t("settings.directorsFileLocation")).setDesc(t("settings.directorsFileLocationDesc")).addSearch((cb) => {
       new FolderSuggest(this.app, cb.inputEl, (folder) => {
         this.plugin.settings.directorsPath = folder;
         this.plugin.saveSettings();
@@ -3341,7 +3495,7 @@ var ObsidianTMDBSettingTab = class extends import_obsidian10.PluginSettingTab {
         await this.plugin.saveSettings();
       });
     });
-    new import_obsidian10.Setting(containerEl).setName(t("settings.writersFileLocation")).setDesc(t("settings.writersFileLocationDesc")).addSearch((cb) => {
+    new import_obsidian11.Setting(containerEl).setName(t("settings.writersFileLocation")).setDesc(t("settings.writersFileLocationDesc")).addSearch((cb) => {
       new FolderSuggest(this.app, cb.inputEl, (folder) => {
         this.plugin.settings.writersPath = folder;
         this.plugin.saveSettings();
@@ -3351,7 +3505,7 @@ var ObsidianTMDBSettingTab = class extends import_obsidian10.PluginSettingTab {
         await this.plugin.saveSettings();
       });
     });
-    new import_obsidian10.Setting(containerEl).setName(t("settings.producersFileLocation")).setDesc(t("settings.producersFileLocationDesc")).addSearch((cb) => {
+    new import_obsidian11.Setting(containerEl).setName(t("settings.producersFileLocation")).setDesc(t("settings.producersFileLocationDesc")).addSearch((cb) => {
       new FolderSuggest(this.app, cb.inputEl, (folder) => {
         this.plugin.settings.producersPath = folder;
         this.plugin.saveSettings();
@@ -3368,7 +3522,7 @@ var ObsidianTMDBSettingTab = class extends import_obsidian10.PluginSettingTab {
 init_utils();
 
 // Utils/cursor_jumper.ts
-var import_obsidian11 = require("obsidian");
+var import_obsidian12 = require("obsidian");
 var CursorJumper = class {
   constructor(app) {
     this.app = app;
@@ -3378,7 +3532,7 @@ var CursorJumper = class {
    */
   async jumpToNextCursorLocation() {
     try {
-      const activeView = this.app.workspace.getActiveViewOfType(import_obsidian11.MarkdownView);
+      const activeView = this.app.workspace.getActiveViewOfType(import_obsidian12.MarkdownView);
       if (!(activeView == null ? void 0 : activeView.file)) {
         return;
       }
@@ -3396,7 +3550,7 @@ var CursorJumper = class {
 
 // main.ts
 init_i18n();
-var ObsidianTMDBPlugin = class extends import_obsidian12.Plugin {
+var ObsidianTMDBPlugin = class extends import_obsidian13.Plugin {
   async onload() {
     await this.loadSettings();
     initializeLanguage(this.settings.language);
@@ -3431,7 +3585,7 @@ var ObsidianTMDBPlugin = class extends import_obsidian12.Plugin {
   setupFileDeletionListener() {
     this.registerEvent(
       this.app.vault.on("delete", async (file) => {
-        if (file instanceof import_obsidian12.TFile) {
+        if (file instanceof import_obsidian13.TFile) {
           await this.handleFileDeletion(file);
         }
       })
@@ -3469,7 +3623,7 @@ var ObsidianTMDBPlugin = class extends import_obsidian12.Plugin {
       }
     }
     if (filesToDelete.length > 0) {
-      new import_obsidian12.Notice(`Deleted ${filesToDelete.length} associated media file(s) for: ${fileNameWithoutExt}`);
+      new import_obsidian13.Notice(`Deleted ${filesToDelete.length} associated media file(s) for: ${fileNameWithoutExt}`);
     }
   }
   // Helper function to escape special regex characters
@@ -3479,7 +3633,7 @@ var ObsidianTMDBPlugin = class extends import_obsidian12.Plugin {
   // Shows error notification to user
   showNotice(error) {
     try {
-      new import_obsidian12.Notice(error.message);
+      new import_obsidian13.Notice(error.message);
     } catch (e) {
     }
   }
@@ -3503,6 +3657,10 @@ var ObsidianTMDBPlugin = class extends import_obsidian12.Plugin {
       } = this.settings;
       const status = movieShow.status || t("status.willWatch");
       movieShow.status = [status];
+      const userRating = movieShow.userRating;
+      if (userRating !== void 0 && userRating !== null) {
+        movieShow.userRating = userRating;
+      }
       const finalContents = await this.getRenderedContents(movieShow);
       const fileNameFormat = movieShow.isSeries ? seriesFileNameFormat : movieFileNameFormat;
       const folderPath = movieShow.isSeries ? seriesFolder : movieFolder;
@@ -3626,10 +3784,10 @@ ${t("common.status")}: "${escapedStatus}"
       const allFiles = [.../* @__PURE__ */ new Set([...movieFiles, ...seriesFiles])];
       console.log(`[AnalyzeAll] Found ${allFiles.length} markdown files in configured folders`);
       if (allFiles.length === 0) {
-        new import_obsidian12.Notice("No files found in configured folders.");
+        new import_obsidian13.Notice("No files found in configured folders.");
         return;
       }
-      const progressNotice = new import_obsidian12.Notice(`Analyzing 0/${allFiles.length} files...`, 0);
+      const progressNotice = new import_obsidian13.Notice(`Analyzing 0/${allFiles.length} files...`, 0);
       let processedCount = 0;
       let errorCount = 0;
       for (const file of allFiles) {
@@ -3648,7 +3806,7 @@ ${t("common.status")}: "${escapedStatus}"
         }
       }
       progressNotice.hide();
-      new import_obsidian12.Notice(`Mass analysis completed! Processed: ${processedCount}, Errors: ${errorCount}`);
+      new import_obsidian13.Notice(`Mass analysis completed! Processed: ${processedCount}, Errors: ${errorCount}`);
       console.log(`[AnalyzeAll] Mass analysis completed! Processed: ${processedCount}, Errors: ${errorCount}`);
     } catch (err) {
       console.warn(err);
@@ -3787,7 +3945,7 @@ ${renderedContents}`;
       console.log("[Analyze] Starting analysis of current note for _res poster");
       const activeFile = this.app.workspace.getActiveFile();
       if (!activeFile || activeFile.extension !== "md") {
-        new import_obsidian12.Notice("Please open a markdown note to analyze");
+        new import_obsidian13.Notice("Please open a markdown note to analyze");
         return;
       }
       const content = await this.app.vault.cachedRead(activeFile);
@@ -3795,9 +3953,9 @@ ${renderedContents}`;
       if (this.containsResPoster(content)) {
         console.log(`[Analyze] Found _res poster in current file`);
         await this.processResNote(activeFile, content);
-        new import_obsidian12.Notice(`Found and processed _res note: ${activeFile.basename}`);
+        new import_obsidian13.Notice(`Found and processed _res note: ${activeFile.basename}`);
       } else {
-        new import_obsidian12.Notice(`Current note does not contain _res poster: ${activeFile.basename}`);
+        new import_obsidian13.Notice(`Current note does not contain _res poster: ${activeFile.basename}`);
         console.log(`[Analyze] Current file does not contain _res poster`);
       }
     } catch (err) {
@@ -3983,7 +4141,7 @@ ${renderedContents}`;
       return;
     }
     try {
-      const updateNotice = new import_obsidian12.Notice(`Updating: ${item.name}`, 0);
+      const updateNotice = new import_obsidian13.Notice(`Updating: ${item.name}`, 0);
       const originalFile = this.app.workspace.getActiveFile();
       if (!originalFile) {
         console.error("[Update Note] No active file found");
@@ -4009,7 +4167,7 @@ ${renderedContents}`;
       updateNotice.setMessage(`Retrieved TMDB data for: ${item.name}`);
       if (this.settings.saveImagesLocally) {
         const { processImages: processImages2 } = await Promise.resolve().then(() => (init_imageUtils(), imageUtils_exports));
-        const imageNotice = new import_obsidian12.Notice("Processing images...", 0);
+        const imageNotice = new import_obsidian13.Notice("Processing images...", 0);
         movieShow = await processImages2(
           this.app,
           movieShow,
@@ -4029,7 +4187,7 @@ ${renderedContents}`;
           }
         );
         imageNotice.hide();
-        new import_obsidian12.Notice("Images processed!");
+        new import_obsidian13.Notice("Images processed!");
       }
       if (userRating !== null) {
         movieShow.userRating = userRating;
@@ -4103,7 +4261,7 @@ ${renderedContents}`;
         updateNotice.setMessage(`Opening: ${originalFileName}`);
       }
       updateNotice.hide();
-      new import_obsidian12.Notice(`\u2705 Updated: ${originalFileName}`);
+      new import_obsidian13.Notice(`\u2705 Updated: ${originalFileName}`);
     } catch (error) {
       console.error("[Update Note] Error updating note with rating:", error);
       this.showNotice(new Error(`Error updating note: ${error.message}`));

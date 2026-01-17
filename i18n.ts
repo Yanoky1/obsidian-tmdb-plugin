@@ -61,6 +61,9 @@ export interface Translations {
 		approve: string;
 		selectThis: string;
 		loadingAlternativeImages: string;
+		rateMovie: string;
+		ratingValue: string;
+		enterRatingPlaceholder: string;
 	};
 
 	suggesters: {
@@ -279,6 +282,9 @@ const ru: Translations = {
 		selectThis: "Выбрать это",
 		loadingAlternativeImages: "Загрузка альтернативных изображений...",
 
+		rateMovie: "Оцените фильм",
+		ratingValue: "Значение оценки",
+		enterRatingPlaceholder: "Введите оценку от 0 до 10",
 	},
 
 	suggesters: {
@@ -516,6 +522,9 @@ const en: Translations = {
 		selectThis: "Select this",
 		loadingAlternativeImages: "Loading alternative images...",
 
+		rateMovie: "Rate the movie",
+		ratingValue: "Rating value",
+		enterRatingPlaceholder: "Enter rating from 0 to 10",
 	},
 
 	suggesters: {

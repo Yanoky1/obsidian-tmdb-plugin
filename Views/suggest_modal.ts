@@ -224,9 +224,14 @@ export class ItemsSuggestModal extends SuggestModal<TMDBSuggestItem> {
                         t("status.dropped")
                     ];
 
-                    new StatusSelectionModal(this.app, statusOptions, (selectedStatus) => {
+                    new StatusSelectionModal(this.app, statusOptions, (selectedStatus, rating) => {
                         // Store the selected status in the movieShow object
                         (movieShow as any).status = selectedStatus || t("status.willWatch");
+
+                        // Store the rating if provided
+                        if (rating !== null && rating !== undefined) {
+                            (movieShow as any).userRating = rating;
+                        }
 
                         resolve(movieShow);
                     }).open();

@@ -1,11 +1,12 @@
 import { App, Modal, Setting } from "obsidian";
 import { t } from "../i18n";
+import { RatingInputModal } from "./rating_input_modal";
 
 export class StatusSelectionModal extends Modal {
 	private selectedStatus: string | null = null;
-	private onChooseStatus: (status: string | null) => void;
+	private onChooseStatus: (status: string | null, rating?: number | null) => void;
 
-	constructor(app: App, private statusOptions: string[], onChooseStatus: (status: string | null) => void) {
+	constructor(app: App, private statusOptions: string[], onChooseStatus: (status: string | null, rating?: number | null) => void) {
 		super(app);
 		this.onChooseStatus = onChooseStatus;
 	}
@@ -40,7 +41,22 @@ export class StatusSelectionModal extends Modal {
 			setting.settingEl.style.cursor = "pointer";
 			setting.settingEl.onclick = () => {
 				this.selectedStatus = status; // Store the text without emoji
-				this.close();
+
+				// If the selected status is "haveWatched", show rating input
+				if (status === t("status.haveWatched")) {
+					// Close this modal and open the rating input modal
+					this.close();
+
+					// Open rating input modal after a small delay to allow this modal to close
+					setTimeout(() => {
+						new RatingInputModal(this.app, (rating) => {
+							this.onChooseStatus(this.selectedStatus, rating);
+						}).open();
+					}, 100);
+				} else {
+					// For other statuses, just close the modal
+					this.close();
+				}
 			};
 		});
 
@@ -59,6 +75,11 @@ export class StatusSelectionModal extends Modal {
 	onClose() {
 		const { contentEl } = this;
 		contentEl.empty();
-		this.onChooseStatus(this.selectedStatus);
+
+		// If the selected status is not "haveWatched", call the callback directly
+		if (this.selectedStatus !== t("status.haveWatched")) {
+			this.onChooseStatus(this.selectedStatus, null);
+		}
+		// If it is "haveWatched", the rating modal will handle the callback
 	}
 }

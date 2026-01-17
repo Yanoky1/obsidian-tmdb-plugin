@@ -179,6 +179,12 @@ export default class ObsidianTMDBPlugin extends Plugin {
 			const status = (movieShow as any).status || t("status.willWatch"); // Default to localized status if no status was selected
 			movieShow.status = [status]; // Set the status in the movieShow object so it gets replaced in the template
 
+			// If there's a user rating, set it in the movieShow object
+			const userRating = (movieShow as any).userRating;
+			if (userRating !== undefined && userRating !== null) {
+				movieShow.userRating = userRating; // Set the user rating in the movieShow object so it gets replaced in the template
+			}
+
 			const finalContents = await this.getRenderedContents(movieShow);
 
 			const fileNameFormat = movieShow.isSeries
