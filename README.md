@@ -219,6 +219,7 @@ Contain ready markdown links for displaying images in Obsidian. Use local file r
 
 Contain clean file paths or URLs for use in custom markdown constructions, especially for resizing images with `![[file|size]]` syntax.
 
+test 
 | Variable         | Description                    | Type | List | Example      | Usage Example              |
 | ---------------- | ------------------------------ | ---- | ---- | ------------ | -------------------------- |
 | `{{posterPath}}` | Clean path/filename for poster | Path | ✅   | `poster.jpg` | `![[{{posterPath}}\|350]]` |
