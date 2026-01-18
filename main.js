@@ -2784,15 +2784,17 @@ var StatusSelectionModal = class extends import_obsidian7.Modal {
     contentEl.createEl("h2", { text: t("status.selectStatus") });
     const optionsContainer = contentEl.createDiv({ cls: "status-options-container" });
     this.statusOptions.forEach((status) => {
-      const statusEmojis = {
-        [t("status.willWatch")]: "\u{1F3AC}",
-        [t("status.haveWatched")]: "\u2705",
-        [t("status.watching")]: "\u{1F4FA}",
-        [t("status.dropped")]: "\u23F8\uFE0F"
+      const statusIcons = {
+        [t("status.willWatch")]: "bookmark",
+        [t("status.haveWatched")]: "check-circle",
+        [t("status.watching")]: "eye",
+        [t("status.dropped")]: "x-circle"
       };
-      const emoji = statusEmojis[status] || "\u2B50";
-      const displayName = `${emoji} ${status}`;
-      const setting = new import_obsidian7.Setting(optionsContainer).setName(displayName);
+      const iconName = statusIcons[status] || "star";
+      const setting = new import_obsidian7.Setting(optionsContainer).setName(status);
+      const iconEl = setting.nameEl.createSpan({ cls: "status-icon" });
+      (0, import_obsidian7.setIcon)(iconEl, iconName);
+      setting.nameEl.prepend(iconEl);
       setting.settingEl.style.cursor = "pointer";
       setting.settingEl.onclick = () => {
         this.selectedStatus = status;
@@ -2809,6 +2811,9 @@ var StatusSelectionModal = class extends import_obsidian7.Modal {
       };
     });
     const skipSetting = new import_obsidian7.Setting(contentEl).setName(t("status.skip")).setDesc(`${t("status.useDefault")} (${t("status.defaultStatus")})`);
+    const skipIconEl = skipSetting.nameEl.createSpan({ cls: "status-icon" });
+    (0, import_obsidian7.setIcon)(skipIconEl, "forward");
+    skipSetting.nameEl.prepend(skipIconEl);
     skipSetting.settingEl.style.cursor = "pointer";
     skipSetting.settingEl.onclick = () => {
       this.selectedStatus = null;

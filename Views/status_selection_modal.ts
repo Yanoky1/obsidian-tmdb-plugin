@@ -1,4 +1,4 @@
-import { App, Modal, Setting } from "obsidian";
+import { App, Modal, Setting, setIcon } from "obsidian"; // Импортируем setIcon
 import { t } from "../i18n";
 import { RatingInputModal } from "./rating_input_modal";
 
@@ -18,56 +18,57 @@ export class StatusSelectionModal extends Modal {
 
 		contentEl.createEl("h2", { text: t("status.selectStatus") });
 
-		// Create a container for the status options
 		const optionsContainer = contentEl.createDiv({ cls: "status-options-container" });
 
-		// Add each status option as clickable text with emojis
 		this.statusOptions.forEach((status) => {
-			// Map status to emoji
-			const statusEmojis: { [key: string]: string } = {
-				[t("status.willWatch")]: "🎬",
-				[t("status.haveWatched")]: "✅",
-				[t("status.watching")]: "📺",
-				[t("status.dropped")]: "⏸️"
+			const statusIcons: { [key: string]: string } = {
+				[t("status.willWatch")]: "bookmark",
+				[t("status.haveWatched")]: "check-circle",
+				[t("status.watching")]: "eye",
+				[t("status.dropped")]: "x-circle"
 			};
 
-			const emoji = statusEmojis[status] || "⭐"; // Default emoji if not found
-			const displayName = `${emoji} ${status}`;
+			const iconName = statusIcons[status] || "star";
 
 			const setting = new Setting(optionsContainer)
-				.setName(displayName);
+				.setName(status);
 
-			// Make the entire setting clickable
+			// Создаем span с классом status-icon
+			const iconEl = setting.nameEl.createSpan({ cls: "status-icon" });
+			setIcon(iconEl, iconName);
+			// Удалено: iconEl.style.marginRight (теперь управляется через CSS gap)
+			setting.nameEl.prepend(iconEl);
+
 			setting.settingEl.style.cursor = "pointer";
 			setting.settingEl.onclick = () => {
-				this.selectedStatus = status; // Store the text without emoji
-
-				// If the selected status is "haveWatched", show rating input
+				this.selectedStatus = status;
 				if (status === t("status.haveWatched")) {
-					// Close this modal and open the rating input modal
 					this.close();
-
-					// Open rating input modal after a small delay to allow this modal to close
 					setTimeout(() => {
 						new RatingInputModal(this.app, (rating) => {
 							this.onChooseStatus(this.selectedStatus, rating);
 						}).open();
 					}, 100);
 				} else {
-					// For other statuses, just close the modal
 					this.close();
 				}
 			};
 		});
 
-		// Add a "Skip" option
+		// Добавляем иконку для кнопки Skip (Пропустить)
 		const skipSetting = new Setting(contentEl)
 			.setName(t("status.skip"))
 			.setDesc(`${t("status.useDefault")} (${t("status.defaultStatus")})`);
 
+		// ТЕПЕРЬ ТУТ ТОЖЕ ГЕНЕРИРУЕТСЯ КЛАСС status-icon
+		const skipIconEl = skipSetting.nameEl.createSpan({ cls: "status-icon" });
+		setIcon(skipIconEl, "forward");
+		// Удалено: skipIconEl.style.marginRight
+		skipSetting.nameEl.prepend(skipIconEl);
+
 		skipSetting.settingEl.style.cursor = "pointer";
 		skipSetting.settingEl.onclick = () => {
-			this.selectedStatus = null; // Will use default
+			this.selectedStatus = null;
 			this.close();
 		};
 	}
@@ -75,11 +76,8 @@ export class StatusSelectionModal extends Modal {
 	onClose() {
 		const { contentEl } = this;
 		contentEl.empty();
-
-		// If the selected status is not "haveWatched", call the callback directly
 		if (this.selectedStatus !== t("status.haveWatched")) {
 			this.onChooseStatus(this.selectedStatus, null);
 		}
-		// If it is "haveWatched", the rating modal will handle the callback
 	}
 }

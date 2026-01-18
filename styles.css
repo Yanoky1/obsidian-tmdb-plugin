@@ -196,6 +196,54 @@
 	background-color: transparent;
 }
 
+/* Контейнер модалки выбора статуса */
+.TMDB-plugin__status-selection-modal .setting-item {
+    padding: 10px 0px !important; 
+    border-top: 1px solid var(--background-modifier-border);
+}
+
+/* Убираем верхнюю границу у самого первого элемента */
+.TMDB-plugin__status-selection-modal .status-options-container .setting-item:first-child {
+    border-top: none;
+}
+
+/* Добавляем отступ снизу специально для "Забросил" (последний в контейнере опций) */
+.TMDB-plugin__status-selection-modal .status-options-container .setting-item:last-child {
+	padding: 10px 0px !important; 
+}
+
+/* Убираем отступ сверху для "Пропустить" */
+.TMDB-plugin__status-selection-modal > .setting-item {
+    padding-top: 5px !important;
+}
+
+/* Корректировка размера иконок для лучшего вида в узких строках */
+.TMDB-plugin__status-selection-modal .svg-icon {
+    width: 18px;
+    height: 18px;
+}
+
+/* Стили для описания под "Пропустить" */
+.TMDB-plugin__status-selection-modal .setting-item-description {
+    margin-top: 2px;
+    padding-left: 24px; /* Выравниваем текст описания под текстом названия (пропуская иконку) */
+}
+
+/* Контейнер для иконки и текста */
+.TMDB-plugin__status-selection-modal .setting-item-name {
+    display: flex;
+    align-items: center; /* Центрирует иконку и текст по вертикали */
+    gap: 5px !important; /* Заменяет marginRight в JS, более современный подход */
+	margin-bottom: 0px;
+}
+
+/* Стилизация самой иконки */
+.TMDB-plugin__status-selection-modal .status-icon svg {
+    display: block; /* Убирает лишние отступы снизу у inline-элементов */
+    width: 20px;
+    height: 20px;
+}
+
 .TMDB-plugin__settings .setting-item.mod-heading:first-child {
 	margin-top: 0;
 }
@@ -207,6 +255,7 @@
 	text-transform: uppercase;
 	letter-spacing: 1px;
 	position: relative;
+	
 }
 
 .TMDB-plugin__settings .setting-item.mod-heading .setting-item-info .setting-item-name::after {
