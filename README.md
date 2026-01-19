@@ -21,13 +21,13 @@ Key differences between the [original plugin](https://github.com/Alintor/obsidia
 
 # Obsidian TMDB search Plugin
 
-Easily search movies and TV shows info via Kinopoisk and create notes.
+Easily search movies and TV shows info via TMDB and create notes.
 
 # Description
 
-Search movies and TV shows information from Kinopoisk database.
+Search movies and TV shows information from TMDB database.
 
-Uses the Kinopoisk.dev API to retrieve comprehensive film and series data.
+Uses the [developer.themoviedb.org](https://developer.themoviedb.org/docs/getting-started) to retrieve comprehensive film and series data.
 
 # How to install
 
@@ -69,9 +69,9 @@ Uses the Kinopoisk.dev API to retrieve comprehensive film and series data.
 You need an API token to use this plugin.
 
 1. Visit [developer.themoviedb.org](https://developer.themoviedb.org/docs/getting-started)
-2. Choose the free plan
-3. Follow the registration steps
-4. Copy your API token to the plugin settings
+2. Register
+3. Create an app
+4. Copy the API to the plugin settings
 
 # New file name
 
@@ -185,7 +185,7 @@ Please find here a definition of the possible variables to be used in your templ
 
 | Variable               | Description                                  | Type   |Example                                            |
 | ---------------------- | -------------------------------------------- | ------ |-------------------------------------------------- |
-| `{{id}}`               | Unique film identifier in Kinopoisk database | Number |`301`                                              |
+| `{{id}}`               | Unique film identifier in TMDB database | Number |`301`                                              |
 | `{{name}}`             | Main Russian film/series title               | String |`Матрица`                                          |
 | `{{enName}}`  | Alternative title (usually original)         | String | `The Matrix`                                       |
 | `{{year}}`             | Film/series release year                     | Number | `1999`                                             |
