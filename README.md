@@ -255,19 +255,19 @@ test
 | -------------------- | ------------------------------- | ------ | ---- | ------------------------------- |
 | `{{director}}`       | Film directors                  | String | ✅   | `Чад Стахелски` |
 | `{{directorsLinks}}` | Directors as Obsidian links     | Link   | ✅   | `[[Чад Стахелски]]`             |
-| `{{directorsLinksWithPath}}`       | Directors as Obsidian links with path                  | String | ✅   | `[[Dataview/Актеры_Режиссеры/Чад Стахелски]]` |
+| `{{directorsLinksWithPath}}`       | Directors as Obsidian links with path                  | Link | ✅   | `[[Dataview/Актеры_Режиссеры/Чад Стахелски]]` |
 | `{{directorsIdsWithPath}}` | Directors as Obsidian links with path and ID     | Link   | ✅   | `[[Dataview/Актеры_Режиссеры/40644\|Чад Стахелски]]`             |
 | `{{actors}}`         | Main film actors                | String | ✅   | `Киану Ривз, Микаэль Нюквист`   |
 | `{{actorsLinks}}`    | Actors as Obsidian links        | Link   | ✅   | `[[Киану Ривз]], [[Микаэль Нюквист]]`                |
-| `{{actorsLinksWithPath}}`         | Actors  as Obsidian links with path             | String | ✅   | `[[Dataview/Актеры_Режиссеры/Киану Ривз]], [[Dataview/Актеры_Режиссеры/Микаэль Нюквист]]`   |
+| `{{actorsLinksWithPath}}`         | Actors  as Obsidian links with path             | Link | ✅   | `[[Dataview/Актеры_Режиссеры/Киану Ривз]], [[Dataview/Актеры_Режиссеры/Микаэль Нюквист]]`   |
 | `{{actorsIdsWithPath}}`    | Actors as Obsidian links with path and ID       | Link   | ✅   | `[[Dataview/Актеры_Режиссеры/6384\|Киану Ривз]], [[Dataview/Актеры_Режиссеры/6283\|Микаэль Нюквист]]`                |
 | `{{writers}}`        | Film screenwriters              | String | ✅   | `Дерек Колстад` |
 | `{{writersLinks}}`   | Screenwriters as Obsidian links | Link   | ✅   | `[[Дерек Колстад]]`             |
-| `{{writersLinksWithPath}}`        | Screenwriters as Obsidian links with path              | String | ✅   | `[[Dataview/Актеры_Режиссеры/Дерек Колстад]]` |
+| `{{writersLinksWithPath}}`        | Screenwriters as Obsidian links with path              | Link | ✅   | `[[Dataview/Актеры_Режиссеры/Дерек Колстад]]` |
 | `{{writersIdsWithPath}}`   | Screenwriters as Obsidian links with path and ID  | Link   | ✅   | `[[Dataview/Актеры_Режиссеры/1076800\|Дерек Колстад]]`             |
 | `{{producers}}`      | Film producers                  | String | ✅   | `Mike Witherill, Бэзил Иваник`                 |
 | `{{producersLinks}}` | Producers as Obsidian links     | Link   | ✅   | `[[Mike Witherill]], [[Бэзил Иваник]]`             |
-| `{{producersLinksWithPath}}`      | Producers as Obsidian links with path                | String | ✅   | `[[Dataview/Актеры_Режиссеры/Mike Witherill]], [[Dataview/Актеры_Режиссеры/Бэзил Иваник]]`                 |
+| `{{producersLinksWithPath}}`      | Producers as Obsidian links with path                | Link | ✅   | `[[Dataview/Актеры_Режиссеры/Mike Witherill]], [[Dataview/Актеры_Режиссеры/Бэзил Иваник]]`                 |
 | `{{producersIdsWithPath}}` | Producers as Obsidian links with path and ID     | Link   | ✅   | `[[Dataview/Актеры_Режиссеры/1281371\|Mike Witherill]], [[Dataview/Актеры_Режиссеры/67759\|Бэзил Иваник]]`             |
 
 ## ⚙️ Technical Specifications
@@ -286,7 +286,7 @@ test
 
 | Variable                       | Description                          | Type   | List | Example   |
 | ------------------------------ | ------------------------------------ | ------ | ---- | --------- |
-| `{{ratingImdb}}`               | TMDB rating (0-10)                   | Number | ❌   | `7.5`     |
+| `{{ratingTmdb}}`               | TMDB rating (0-10)                   | Number | ❌   | `7.5`     |
 
 ## 🔗 External Links and Identifiers
 
@@ -328,3 +328,7 @@ test
 # License
 
 [TMDB-search](https://github.com/Yanoky1/obsidian-tmdb-plugin) is licensed under the GNU AGPLv3 license. Refer to [LICENSE](https://github.com/Yanoky1/obsidian-tmdb-plugin/blob/main/LICENSE.md) for more information.
+
+# Related Tools
+
+- **[TMDB actor search](https://github.com/Yanoky1/obsidian-tmdb-actor-plugin )** is an accompanying plugin that allows you to create actors and makes the movie database more complete.
