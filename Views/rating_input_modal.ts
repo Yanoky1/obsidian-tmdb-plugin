@@ -18,31 +18,18 @@ export class RatingInputModal extends Modal {
 		contentEl.createEl("h2", { text: t("modals.rateMovie") });
 
 		// Create a container for the rating input
-		const ratingContainer = contentEl.createDiv({ cls: "rating-input-container" });
+		const ratingContainer = contentEl.createDiv({ cls: "TMDB-plugin__rating-input-container" });
 
 		// Create rating input with numbers
-		const numberRatingContainer = ratingContainer.createDiv({ cls: "number-rating" });
+		const numberRatingContainer = ratingContainer.createDiv({ cls: "TMDB-plugin__number-rating" });
 
 		// Create 10 numbered buttons for rating (0-10 scale)
 		for (let i = 0; i <= 10; i++) {
 			const numberButton = numberRatingContainer.createSpan({
 				text: i.toString(),
-				cls: "number-button",
+				cls: "TMDB-plugin__number-button",
 				attr: { "data-rating": i.toString() }
 			});
-
-			numberButton.style.fontSize = "1rem";
-			numberButton.style.cursor = "pointer";
-			numberButton.style.margin = "0 1px";
-			numberButton.style.padding = "6px 8px";
-			numberButton.style.border = "2px solid #d1d5db";
-			numberButton.style.borderRadius = "4px";
-			numberButton.style.display = "inline-block";
-			numberButton.style.textAlign = "center";
-			numberButton.style.width = "30px";
-			numberButton.style.height = "30px";
-			numberButton.style.lineHeight = "18px";
-			numberButton.style.boxSizing = "border-box";
 
 			numberButton.addEventListener("click", () => {
 				this.rating = i;
@@ -63,30 +50,30 @@ export class RatingInputModal extends Modal {
 		}
 
 		// Create numeric input as alternative
-		const numericInputContainer = ratingContainer.createDiv({ cls: "numeric-input" });
-		numericInputContainer.createEl("label", { text: `${t("modals.ratingValue")}: ` });
+		// const numericInputContainer = ratingContainer.createDiv({ cls: "TMDB-plugin__numeric-input" });
+		// numericInputContainer.createEl("label", { text: `${t("modals.ratingValue")}: ` });
 
-		const numericInput = numericInputContainer.createEl("input", {
-			type: "number",
-			placeholder: t("modals.enterRatingPlaceholder")
-		});
-
+		// const numericInput = numericInputContainer.createEl("input", {
+		// 	type: "number",
+		// 	placeholder: t("modals.enterRatingPlaceholder")
+		// });
+		
 		// Set attributes separately to avoid TypeScript error
-		numericInput.setAttribute("min", "0");
-		numericInput.setAttribute("max", "10");
-		numericInput.setAttribute("step", "0.5");
+		// numericInput.setAttribute("min", "0");
+		// numericInput.setAttribute("max", "10");
+		// numericInput.setAttribute("step", "0.5");
 
-		numericInput.addEventListener("input", (e) => {
-			const value = parseFloat((e.target as HTMLInputElement).value);
-			if (!isNaN(value) && value >= 0 && value <= 10) {
-				this.rating = value;
-				// Update number display based on numeric input
-				this.updateNumberDisplay(Math.round(value));
-			} else if ((e.target as HTMLInputElement).value === "") {
-				this.rating = null;
-				this.resetNumberDisplay();
-			}
-		});
+		// numericInput.addEventListener("input", (e) => {
+		// 	const value = parseFloat((e.target as HTMLInputElement).value);
+		// 	if (!isNaN(value) && value >= 0 && value <= 10) {
+		// 		this.rating = value;
+		// 		// Update number display based on numeric input
+		// 		this.updateNumberDisplay(Math.round(value));
+		// 	} else if ((e.target as HTMLInputElement).value === "") {
+		// 		this.rating = null;
+		// 		this.resetNumberDisplay();
+		// 	}
+		// });
 
 		// Add buttons
 		const buttonContainer = contentEl.createDiv({ cls: "modal-button-container" });
@@ -119,50 +106,41 @@ export class RatingInputModal extends Modal {
 	}
 
 	private updateNumberDisplay(selectedRating: number) {
-		const numberButtons = this.contentEl.querySelectorAll(".number-button");
+		const numberButtons = this.contentEl.querySelectorAll(".TMDB-plugin__number-button");
 		numberButtons.forEach((button) => {
 			const buttonElement = button as HTMLElement;
 			const ratingValue = parseInt(buttonElement.getAttribute("data-rating") || "0");
 			if (ratingValue === selectedRating) {
-				buttonElement.style.backgroundColor = "#3b82f6"; // Blue for selected
-				buttonElement.style.color = "white";
-				buttonElement.style.borderColor = "#3b82f6";
+				buttonElement.classList.add("selected");
 			} else {
-				buttonElement.style.backgroundColor = "";
-				buttonElement.style.color = "";
-				buttonElement.style.borderColor = "#d1d5db";
+				buttonElement.classList.remove("selected");
 			}
 		});
 	}
 
 	private highlightNumbers(toRating: number) {
-		const numberButtons = this.contentEl.querySelectorAll(".number-button");
+		const numberButtons = this.contentEl.querySelectorAll(".TMDB-plugin__number-button");
 		numberButtons.forEach((button) => {
 			const buttonElement = button as HTMLElement;
 			const ratingValue = parseInt(buttonElement.getAttribute("data-rating") || "0");
 			if (ratingValue <= toRating) {
-				buttonElement.style.backgroundColor = "#93c5fd"; // Light blue for hover effect
-				buttonElement.style.color = "black";
+				buttonElement.classList.add("hovered");
 			} else {
-				buttonElement.style.backgroundColor = "";
-				buttonElement.style.color = "";
+				buttonElement.classList.remove("hovered");
 			}
 		});
 	}
 
 	private resetNumberDisplay() {
-		const numberButtons = this.contentEl.querySelectorAll(".number-button");
+		const numberButtons = this.contentEl.querySelectorAll(".TMDB-plugin__number-button");
 		numberButtons.forEach((button) => {
 			const buttonElement = button as HTMLElement;
 			const ratingValue = parseInt(buttonElement.getAttribute("data-rating") || "0");
+			buttonElement.classList.remove("hovered");
 			if (this.rating !== null && ratingValue === this.rating) {
-				buttonElement.style.backgroundColor = "#3b82f6"; // Blue for selected
-				buttonElement.style.color = "white";
-				buttonElement.style.borderColor = "#3b82f6";
+				buttonElement.classList.add("selected");
 			} else {
-				buttonElement.style.backgroundColor = "";
-				buttonElement.style.color = "";
-				buttonElement.style.borderColor = "#d1d5db";
+				buttonElement.classList.remove("selected");
 			}
 		});
 	}
